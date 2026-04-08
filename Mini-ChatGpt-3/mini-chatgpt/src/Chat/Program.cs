@@ -59,7 +59,7 @@ namespace MiniChatGPT.Chat
                 JsonElement modJson = (JsonElement)payload.ModelPayload;
                 ILanguageModel model = payload.ModelKind == "bigram"? new NGramModelFactory().CreateBigramModelFromPayload(tokenizer.VocabSize, modJson): new NGramModelFactory().CreateTrigramModelFromPayload(tokenizer.VocabSize, modJson);
 
-                IMathOps mathOps = new MiniChatGPT.MathCore.MathOps();
+                IMathOps mathOps = new MathOpsImpl();
                 MiniChatGPT.Sampling.Interfaces.ISampler sampler = new MiniChatGPT.Sampling.Sampler(mathOps);
 
                 RuntimeTextGenerator generator = new RuntimeTextGenerator(

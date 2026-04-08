@@ -9,15 +9,6 @@ public interface ITokenizer : IContractFingerprint
     object GetPayloadForCheckpoint();
 }
 
-/// <summary>Interface for language models. Implemented by Lib.Models.NGram, TinyNN, TinyTransformer.</summary>
-public interface ILanguageModel : IContractFingerprint
-{
-    string ModelKind { get; }
-    int VocabSize { get; }
-    float[] NextTokenScores(ReadOnlySpan<int> context);
-    object GetPayloadForCheckpoint();
-}
-
 /// <summary>Abstraction for text generation. Consumed by Lib.ChatConsole.</summary>
 public interface ITextGenerator
 {
