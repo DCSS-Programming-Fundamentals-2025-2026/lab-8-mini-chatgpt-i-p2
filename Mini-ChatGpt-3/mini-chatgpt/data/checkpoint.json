@@ -1,0 +1,17 @@
+{
+  "tokenizerKind": "word",
+  "tokenizerPayload": {
+    "words": [ "<UNK>", "запасне", "значення", "<EOS>" ]
+  },
+  "modelKind": "bigram",
+  "modelPayload": {
+    "bigramProbs": [
+      [ 0.1, 0.3, 0.3, 0.3 ],
+      [ 0, 0, 1.0, 0 ],
+      [ 0, 0, 0, 1.0 ],
+      [ 0, 0, 0, 1.0 ]
+    ],
+    "trigramProbs": []
+  },
+  "seed": 42
+}
