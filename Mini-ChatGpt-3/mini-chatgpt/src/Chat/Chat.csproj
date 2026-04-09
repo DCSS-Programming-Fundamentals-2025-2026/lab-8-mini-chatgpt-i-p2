@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Lib.Models.TinyNN\Lib.Models.TinyNN.csproj" />
+    <ProjectReference Include="..\Lib.Models.TinyTransformer\Lib.Models.TinyTransformer.csproj" />
     <ProjectReference Include="..\Lib.Tokenization\Lib.Tokenization.csproj" />
     <ProjectReference Include="..\NGram\NGram.csproj" />
     <ProjectReference Include="..\Lib.Runtime\Lib.Runtime.csproj" />
