@@ -68,7 +68,7 @@ namespace Lib.Training
 
             System.IO.File.WriteAllText(path, jsonString);
 
-            Console.WriteLine($"Ідеальна матриця збережена в корінь ---> ({path})");
+            Console.WriteLine($"Матриця збережена в ---> ({path})");
         }
     }
 }

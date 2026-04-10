@@ -9,7 +9,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Contracts\Contracts.csproj" />
-		<ProjectReference Include="..\Lib.ChatConsole.Tests\Lib.ChatConsole.Tests.csproj" />
 		<ProjectReference Include="..\Lib.ChatConsole\Lib.ChatConsole.csproj" />
 		<ProjectReference Include="..\Lib.MathCore\Lib.MathCore.csproj" />
 	</ItemGroup>
