@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Models.TinyTransformer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Models.TinyNN", "src\Lib.Models.TinyNN\Lib.Models.TinyNN.csproj", "{5761A057-1DE7-4CD1-AD17-1D57D97A9EFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Neural", "src\Integration.Neural\Integration.Neural.csproj", "{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,18 @@ Global
 		{5761A057-1DE7-4CD1-AD17-1D57D97A9EFF}.Release|x64.Build.0 = Release|Any CPU
 		{5761A057-1DE7-4CD1-AD17-1D57D97A9EFF}.Release|x86.ActiveCfg = Release|Any CPU
 		{5761A057-1DE7-4CD1-AD17-1D57D97A9EFF}.Release|x86.Build.0 = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|x64.Build.0 = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|x64.ActiveCfg = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|x64.Build.0 = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +258,7 @@ Global
 		{2497B094-488E-4181-A513-7811A803A0E5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{9ED3DF5D-283C-400B-BA76-414232CCDF9E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{5761A057-1DE7-4CD1-AD17-1D57D97A9EFF} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{D6CE91F4-15E1-48A2-8B42-7A551F22D1EC} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {78772EB5-B2BC-41FE-B0D9-2F242D9B5302}
