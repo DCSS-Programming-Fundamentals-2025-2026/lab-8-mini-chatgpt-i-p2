@@ -12,7 +12,7 @@
         {
             Temperature = 0.5f;
             TopK = 10;
-            MaxTokens = 100;
+            MaxTokens = 15;
             Seed = null;
             IsRunning = true;
         }

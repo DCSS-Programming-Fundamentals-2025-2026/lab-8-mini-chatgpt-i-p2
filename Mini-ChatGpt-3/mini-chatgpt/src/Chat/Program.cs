@@ -125,7 +125,9 @@ namespace MiniChatGPT.Chat
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nПомилка: {ex.Message}");
+                Console.WriteLine("\n--- ДЕТАЛІ ПОМИЛКИ ---");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("----------------------\n");
                 return 1;
             }
 

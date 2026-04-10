@@ -15,7 +15,7 @@ public class NGramCounts
 
         TrigramCounts = new Dictionary<(int, int), float[]>();
 
-        for(int i = 0; i < vocabSize; i++)
+        for (int i = 0; i < vocabSize; i++)
         {
             BigramCounts[i] = new float[vocabSize];
         }
@@ -23,9 +23,9 @@ public class NGramCounts
 
     public void CountBigrams(ReadOnlySpan<int> tokens)
     {
-        for(int i = 0; i < tokens.Length - 1; i++)
+        for (int i = 0; i < tokens.Length - 1; i++)
         {
-            BigramCounts[tokens[i]][tokens[i+1]]++;
+            BigramCounts[tokens[i]][tokens[i + 1]]++;
         }
     }
 

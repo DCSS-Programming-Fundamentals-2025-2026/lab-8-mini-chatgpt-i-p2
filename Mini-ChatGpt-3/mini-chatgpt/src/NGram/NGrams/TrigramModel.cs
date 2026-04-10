@@ -115,24 +115,26 @@ namespace NGram
 
         public object GetPayloadForCheckpoint()
         {
-            List<TrigramEntry> list = new List<TrigramEntry>();
+            NGram.NGramPayloadMapper mapper = new NGram.NGramPayloadMapper();
 
-            foreach (var item in _trigramProbs)
+            mapper.BigramProbs = _bigramProbs;
+
+            System.Collections.Generic.List<NGram.TrigramEntry> trigramList = new System.Collections.Generic.List<NGram.TrigramEntry>();
+
+            foreach (var kvp in _trigramProbs)
             {
-                TrigramEntry entry = new TrigramEntry();
+                NGram.TrigramEntry entry = new NGram.TrigramEntry();
 
-                entry.Prev2 = item.Key.Item1;
-                entry.Prev1 = item.Key.Item2;
-                entry.NextTokenScores = item.Value;
+                entry.Prev2 = kvp.Key.Item1;
+                entry.Prev1 = kvp.Key.Item2;
+                entry.NextTokenScores = kvp.Value;
 
-                list.Add(entry);
+                trigramList.Add(entry);
             }
 
-            return new NGramPayloadMapper
-            {
-                BigramProbs = _bigramProbs,
-                TrigramProbs = list
-            };
+            mapper.TrigramProbs = trigramList;
+
+            return mapper;
         }
 
         public void FromPayload(JsonElement payload)
