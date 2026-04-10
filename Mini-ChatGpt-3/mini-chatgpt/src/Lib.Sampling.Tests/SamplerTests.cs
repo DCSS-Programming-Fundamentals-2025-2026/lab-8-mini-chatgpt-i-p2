@@ -30,7 +30,7 @@ namespace Lib.Sampling.Tests
             float[] probs = null;
 
             var ex = Assert.Throws<ArgumentException>(() => _sampler.Sample(probs, 1.0f, 10));
-            Assert.That(ex.Message, Does.Contain("Масив ймовірностей є порожнім!"));
+            Assert.That(ex.Message, Does.Contain("РњР°СЃРёРІ Р№РјРѕРІС–СЂРЅРѕСЃС‚РµР№ С” РїРѕСЂРѕР¶РЅС–Рј!"));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Lib.Sampling.Tests
             float[] probs = Array.Empty<float>();
 
             var ex = Assert.Throws<ArgumentException>(() => _sampler.Sample(probs, 1.0f, 10));
-            Assert.That(ex.Message, Does.Contain("Масив ймовірностей є порожнім!"));
+            Assert.That(ex.Message, Does.Contain("РњР°СЃРёРІ Р№РјРѕРІС–СЂРЅРѕСЃС‚РµР№ С” РїРѕСЂРѕР¶РЅС–Рј!"));
             Assert.That(probs.Length, Is.EqualTo(0));
         }
 
@@ -74,7 +74,7 @@ namespace Lib.Sampling.Tests
             float[] probsTempHigh = _fakeMathOps.LastReceivedProbs;
             float diffHigh = Math.Abs(probsTempHigh[0] - probsTempHigh[1]);
 
-            Assert.That(diffHigh, Is.LessThan(diffNormal), "Висока температура повинна зближувати ймовірності між собою!");
+            Assert.That(diffHigh, Is.LessThan(diffNormal), "");
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Lib.Sampling.Tests
             var rng2 = _fakeMathOps.LastRng;
             int randomValue2 = rng2.Next();
 
-            Assert.That(randomValue1, Is.EqualTo(randomValue2), "Однаковий seed має генерувати однакову послідовність чисел");
+            Assert.That(randomValue1, Is.EqualTo(randomValue2), "");
         }
 
         [Test]
