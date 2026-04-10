@@ -1,4 +1,4 @@
-using MiniChatGPT.Contracts;
+п»їusing MiniChatGPT.Contracts;
 using MiniChatGPT.ChatConsole.Commands;
 using MiniChatGPT.ChatConsole;
 
@@ -43,7 +43,7 @@ namespace Lib.ChatConsole.Tests
 
             Assert.That(_options.Temperature, Is.EqualTo(5f));
             Assert.That(_printedMessages.Count, Is.GreaterThanOrEqualTo(2));
-            Assert.That(_printedMessages[0], Does.Contain("оновлено"));
+            Assert.That(_printedMessages[0], Does.Contain("РѕРЅРѕРІР»РµРЅРѕ"));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/temp aaa", _context);
 
             Assert.That(_options.Temperature, Is.EqualTo(0.5f));
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/quit", _context);
 
             Assert.That(_options.IsRunning, Is.False);
-            Assert.That(_printedMessages[0], Does.Contain("Завершення роботи"));
+            Assert.That(_printedMessages[0], Does.Contain("Р—Р°РІРµСЂС€РµРЅРЅСЏ СЂРѕР±РѕС‚Рё"));
         }
 
         [Test]
@@ -72,13 +72,13 @@ namespace Lib.ChatConsole.Tests
             bool isCommand = _registry.TryExecute("/smth", _context);
 
             Assert.That(isCommand, Is.True);
-            Assert.That(_printedMessages[0], Does.Contain("Невідома команда"));
+            Assert.That(_printedMessages[0], Does.Contain("РќРµРІС–РґРѕРјР° РєРѕРјР°РЅРґР°"));
         }
 
         [Test]
         public void TryExecute_NotACommand_ReturnsFalse()
         {
-            bool isCommand = _registry.TryExecute("Привіт", _context);
+            bool isCommand = _registry.TryExecute("РџСЂРёРІС–С‚", _context);
 
             Assert.That(isCommand, Is.False);
             Assert.That(_printedMessages.Count, Is.EqualTo(0));
@@ -99,7 +99,7 @@ namespace Lib.ChatConsole.Tests
 
             Assert.That(_options.TopK, Is.EqualTo(5));
             Assert.That(_printedMessages.Count, Is.GreaterThanOrEqualTo(2));
-            Assert.That(_printedMessages[0], Does.Contain("оновлено"));
+            Assert.That(_printedMessages[0], Does.Contain("РѕРЅРѕРІР»РµРЅРѕ"));
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/topk abc", _context);
 
             Assert.That(_options.TopK, Is.EqualTo(10));
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/topk 5.5", _context);
 
             Assert.That(_options.TopK, Is.EqualTo(10));
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/seed 42", _context);
 
             Assert.That(_options.Seed, Is.EqualTo(42));
-            Assert.That(_printedMessages[0], Does.Contain("оновлено"));
+            Assert.That(_printedMessages[0], Does.Contain("РѕРЅРѕРІР»РµРЅРѕ"));
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/seed", _context);
 
             Assert.That(_options.Seed, Is.Null);
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/reset", _context);
 
             Assert.That(_printedMessages.Count, Is.EqualTo(1));
-            Assert.That(_printedMessages[0], Does.Contain("чат ресетнувся").IgnoreCase.Or.Contain("ресетнувся").IgnoreCase);
+            Assert.That(_printedMessages[0], Does.Contain("С‡Р°С‚ СЂРµСЃРµС‚РЅСѓРІСЃСЏ").IgnoreCase.Or.Contain("СЂРµСЃРµС‚РЅСѓРІСЃСЏ").IgnoreCase);
         }
 
         [Test]
@@ -172,8 +172,8 @@ namespace Lib.ChatConsole.Tests
         {
             _registry.TryExecute("/topk -10", _context);
 
-            Assert.That(_options.TopK, Is.EqualTo(10)); 
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_options.TopK, Is.EqualTo(10));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -181,8 +181,8 @@ namespace Lib.ChatConsole.Tests
         {
             _registry.TryExecute("/temp -1.5", _context);
 
-            Assert.That(_options.Temperature, Is.EqualTo(0.5f)); 
-            Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
+            Assert.That(_options.Temperature, Is.EqualTo(0.5f));
+            Assert.That(_printedMessages[0], Does.Contain("РЅРµРєРѕСЂРµРєС‚РЅРµ С‡РёСЃР»Рѕ"));
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace Lib.ChatConsole.Tests
             _registry.TryExecute("/temp 0", _context);
 
             Assert.That(_options.Temperature, Is.EqualTo(0f));
-            Assert.That(_printedMessages[0], Does.Contain("оновлено"));
+            Assert.That(_printedMessages[0], Does.Contain("РѕРЅРѕРІР»РµРЅРѕ"));
         }
     }
 }
