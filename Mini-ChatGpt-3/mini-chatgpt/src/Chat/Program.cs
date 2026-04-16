@@ -1,14 +1,13 @@
-﻿using System.Text;
+﻿using Lib.MathCore;
+using Lib.Models.TinyNN.Factories;
+using Lib.Runtime;
+using Lib.Tokenization;
+using MiniChatGPT.ChatConsole;
+using MiniChatGPT.Contracts;
+using NGram.ModelFactory;
+using System.Text;
 using System.Text.Json;
 using ContractTokenizer = MiniChatGPT.Contracts.ITokenizer;
-using MiniChatGPT.Contracts;
-using Lib.MathCore;
-using Lib.Tokenization;
-using Lib.Runtime;
-using NGram.ModelFactory;
-using MiniChatGPT.ChatConsole;
-using Lib.Models.TinyNN.Factories;
-using Lib.Models.TinyTransformer.Factories;
 
 namespace MiniChatGPT.Chat
 {
@@ -19,44 +18,43 @@ namespace MiniChatGPT.Chat
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 
-            string checkpointPath = "";
-            float temp = 0.3f;
+            Console.WriteLine("\nMiniChatGPT Chat");
+            Console.WriteLine("Оберіть модель для завантаження:");
+            Console.WriteLine("1. Trigram");
+            Console.WriteLine("2. TinyNN");
+            Console.Write("\nВибір: ");
+
+            string choice = Console.ReadLine();
+            string fileName;
+
+            if (choice == "2")
+            {
+                fileName = "checkpoint_nn.json";
+            }
+            else
+            {
+                fileName = "checkpoint_trigram.json";
+            }
+
+            string baseDir = AppContext.BaseDirectory;
+            string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+            string checkpointPath = Path.Combine(rootDir, "data", fileName);
+
+            float temp;
+            if (choice == "2")
+            {
+                temp = 0.7f;
+            }
+            else
+            {
+                temp = 0.3f;
+            }
             int topK = 5;
 
-            for (int i = 0; i < args.Length; i++)
+            if (!File.Exists(checkpointPath))
             {
-                if (args[i] == "--checkpoint")
-                {
-                    if (i + 1 < args.Length)
-                    {
-                        checkpointPath = args[i + 1];
-                    }
-                }
-            }
-
-            if (string.IsNullOrEmpty(checkpointPath))
-            {
-                string fileName = "checkpoint.json";
-                string[] possiblePaths =
-                {
-                    Path.Combine(Environment.CurrentDirectory, "data", fileName),
-                    Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "data", fileName)),
-                    Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "data", fileName))
-                };
-
-                foreach (string path in possiblePaths)
-                {
-                    if (File.Exists(path))
-                    {
-                        checkpointPath = path;
-                        break;
-                    }
-                }
-            }
-
-            if (string.IsNullOrEmpty(checkpointPath))
-            {
-                Console.WriteLine("Не знайдено файл конфігурації.");
+                Console.WriteLine($"Файл {fileName} не знайдено!");
+                Console.WriteLine($"Шлях: {checkpointPath}");
                 return 1;
             }
 
@@ -84,13 +82,10 @@ namespace MiniChatGPT.Chat
                 bool requiresSoftmax = false;
                 IMathOps mathOps = new MathOpsImpl();
 
-                if (payload.ModelKind == "bigram")
-                {
-                    model = new NGramModelFactory().CreateBigramModelFromPayload(tokenizer.VocabSize, modJson);
-                }
-                else if (payload.ModelKind == "trigram")
+                if (payload.ModelKind == "trigram")
                 {
                     model = new NGramModelFactory().CreateTrigramModelFromPayload(tokenizer.VocabSize, modJson);
+                    requiresSoftmax = false;
                 }
                 else if (payload.ModelKind == "tinynn")
                 {
@@ -98,20 +93,8 @@ namespace MiniChatGPT.Chat
                     model = new LanguageModelAdapter(rawTinyNN, "tinynn", tokenizer.VocabSize);
                     requiresSoftmax = true;
                 }
-                else if (payload.ModelKind == "tinytransformer")
-                {
-                    object rawTransformer = TinyTransformerModelFactory.FromPayload(modJson);
-                    model = new LanguageModelAdapter(rawTransformer, "tinytransformer", tokenizer.VocabSize);
-                    requiresSoftmax = true;
-                }
-                else
-                {
-                    Console.WriteLine("Невідомий тип моделі.");
-                    return 1;
-                }
 
-                MiniChatGPT.Sampling.Interfaces.ISampler sampler = new MiniChatGPT.Sampling.Sampler(mathOps);
-
+                var sampler = new MiniChatGPT.Sampling.Sampler(mathOps);
                 RuntimeTextGenerator generator = new RuntimeTextGenerator(
                     model,
                     sampler,
@@ -120,12 +103,15 @@ namespace MiniChatGPT.Chat
                     requiresSoftmax
                 );
 
-                Console.WriteLine("\nСистема MiniChatGPT активована");
+                Console.WriteLine($"\n Завантажена модель: {fileName}");
+                Console.WriteLine("MiniChatGPT активований");
+
                 new ChatRepl(generator).Run(temp, topK, payload.Seed);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Помилка завантаження:");
+                Console.WriteLine(ex.Message);
                 return 1;
             }
 

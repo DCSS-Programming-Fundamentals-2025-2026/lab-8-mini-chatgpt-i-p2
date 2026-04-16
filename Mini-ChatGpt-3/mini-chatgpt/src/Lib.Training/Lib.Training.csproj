@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lib.Corpus\Lib.Corpus.csproj" />
+    <ProjectReference Include="..\Lib.Models.TinyNN\Lib.Models.TinyNN.csproj" />
     <ProjectReference Include="..\Lib.Tokenization\Lib.Tokenization.csproj" />
     <ProjectReference Include="..\NGram\NGram.csproj" />
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
