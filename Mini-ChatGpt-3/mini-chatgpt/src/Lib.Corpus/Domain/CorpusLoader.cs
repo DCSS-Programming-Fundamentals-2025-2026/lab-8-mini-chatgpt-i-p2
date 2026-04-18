@@ -1,64 +1,73 @@
-public class CorpusLoader : ICorpusLoader
+using Lib.Corpus.Configuration;
+using Lib.Corpus.Processing;
+using Lib.Corpus.Infrastructure;
+
+namespace Lib.Corpus.Domain
 {
-    private readonly CorpusTextNormalizer textNormalizer;
-    private readonly CorpusSplitter corpusSplitter;
-    private readonly IFileSystem defaultFileSystem;
-
-    public CorpusLoader(CorpusTextNormalizer textNormalizer, CorpusSplitter corpusSplitter, IFileSystem defaultFileSystem)
+    public class CorpusLoader : ICorpusLoader
     {
-        this.textNormalizer = textNormalizer;
-        this.corpusSplitter = corpusSplitter;
-        this.defaultFileSystem = defaultFileSystem;
-    }
+        private readonly CorpusTextNormalizer _textNormalizer;
+        private readonly CorpusSplitter _corpusSplitter;
+        private readonly IFileSystem _defaultFileSystem;
+        private readonly string Version = "1.0.1";
 
-    public CorpusClass Load(string path, CorpusLoadOptions? options)
-    {
-        if (options == null)
+        public CorpusLoader(CorpusTextNormalizer textNormalizer, CorpusSplitter corpusSplitter, IFileSystem defaultFileSystem)
         {
-            options = new CorpusLoadOptions();
+            this._textNormalizer = textNormalizer;
+            this._corpusSplitter = corpusSplitter;
+            this._defaultFileSystem = defaultFileSystem;
         }
 
-        bool exist = defaultFileSystem.Exists(path);
-        string content;
-
-        if (exist)
+        public static CorpusClass Load(string path)
         {
-            content = defaultFileSystem.ReadAllText(path);
-        }
-        else
-        {
-            content = options.FallBack ?? string.Empty;
-        }
+            CorpusLoader loader = new CorpusLoader(
+                new CorpusTextNormalizer(),
+                new CorpusSplitter(),
+                new DefaultFileSystem()
+            );
 
-        return LoadFromText(content, options);
-    }
-
-    public static CorpusClass Load(string path)
-    {
-        CorpusLoader loader = new CorpusLoader(new CorpusTextNormalizer(), new CorpusSplitter(), new DefaultFileSystem());
-        return loader.Load(path, null);
-    }
-
-    public CorpusClass LoadFromText(string text, CorpusLoadOptions? options)
-    {
-        if (options == null)
-        {
-            options = new CorpusLoadOptions();
+            return loader.Load(path, null);
         }
 
-        text = textNormalizer.Normalize(options.LowerCase, text);
+        public CorpusClass Load(string path, CorpusLoadOptions? options = null)
+        {
+            if (options == null)
+            {
+                options = new CorpusLoadOptions();
+            }
 
-        string[] parts = corpusSplitter.Splitter(text, options.ValidateFraction);
-        string TrainText = parts[0];
-        string ValidatePart = parts[1];
+            bool exist = this._defaultFileSystem.Exists(path);
+            string content;
 
-        return new CorpusClass(TrainText, ValidatePart);
+            if (exist)
+            {
+                content = this._defaultFileSystem.ReadAllText(path);
+            }
+            else
+            {
+                content = options.FallBack ?? string.Empty;
+            }
+
+            return this.LoadFromText(content, options);
+        }
+
+        public CorpusClass LoadFromText(string text, CorpusLoadOptions? options = null)
+        {
+            if (options == null)
+            {
+                options = new CorpusLoadOptions();
+            }
+
+            string normalizedText = this._textNormalizer.Normalize(options.LowerCase, text);
+
+            string[] parts = this._corpusSplitter.Splitter(normalizedText, options.ValidateFraction);
+
+            return new CorpusClass(parts[0], parts[1]);
+        }
+
+        public string GetContractFingerprint()
+        {
+            return this.Version;
+        }
     }
 }
-
-
-
-
-
-
-

@@ -7,6 +7,12 @@ namespace Lib.Tokenization;
 public class WordTokenizer : ITokenizer
 {
     private readonly WordVocabulary _vocabulary;
+    private readonly string Version = "1.0.0";
+    
+    public string GetContractFingerprint()
+    {
+        return Version;
+    }
 
     public WordTokenizer(WordVocabulary vocabulary)
     {
@@ -34,8 +40,6 @@ public class WordTokenizer : ITokenizer
             {
                 continue;
             }
-
-
             string cleaned = WordVocabulary.CleanWord(w);
             tokens.Add(_vocabulary.GetId(cleaned));
         }
@@ -59,7 +63,6 @@ public class WordTokenizer : ITokenizer
                 sb.Append(" ");
             }
         }
-
         return sb.ToString();
     }
 
@@ -72,7 +75,6 @@ public class WordTokenizer : ITokenizer
     {
         WordVocabulary vocab = new WordVocabulary();
         vocab.BuildFromText(text);
-
         return new WordTokenizer(vocab);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using MiniChatGPT.Contracts;
+﻿using MiniChatGPT.Contracts;
 using Lib.Models.TinyNN;
 using Lib.Models.TinyTransformer;
 
@@ -13,76 +12,62 @@ namespace MiniChatGPT.Chat
 
         public LanguageModelAdapter(object originalModel, string modelKind, int vocabSize)
         {
-            _originalModel = originalModel;
-            _modelKind = modelKind;
-            _vocabSize = vocabSize;
+            this._originalModel = originalModel;
+            this._modelKind = modelKind;
+            this._vocabSize = vocabSize;
         }
 
-        public string ModelKind
-        {
-            get
-            {
-                return _modelKind;
-            }
-        }
+        public int VocabSize => this._vocabSize;
+        public string ModelKind => this._modelKind;
 
-        public int VocabSize
-        {
-            get
-            {
-                return _vocabSize;
-            }
-        }
+        public bool RequiresSoftmax => (this._modelKind == "tinynn" || this._modelKind == "tinytransformer");
 
         public float[] NextTokenScores(ReadOnlySpan<int> context)
         {
-            if (_modelKind == "tinynn")
+            if (this._modelKind == "trigram" || this._modelKind == "bigram")
             {
-                TinyNNModel nn = (TinyNNModel)_originalModel;
-
-                return nn.NextTokenScores(context);
+                var m = (ILanguageModel)this._originalModel;
+                return m.NextTokenScores(context);
             }
-            else
+
+            if (this._modelKind == "tinynn")
             {
-                if (_modelKind == "tinytransformer")
-                {
-                    TinyTransformerModel tf = (TinyTransformerModel)_originalModel;
-
-                    return tf.NextTokenScores(context.ToArray());
-                }
-                else
-                {
-                    throw new InvalidOperationException("Невідомий тип моделі");
-                }
+                return ((TinyNNModel)this._originalModel).NextTokenScores(context);
             }
+
+            if (this._modelKind == "tinytransformer")
+            {
+                return ((TinyTransformerModel)this._originalModel).NextTokenScores(context.ToArray());
+            }
+
+            throw new Exception("Unknown model kind");
         }
 
         public object GetPayloadForCheckpoint()
         {
-            if (_modelKind == "tinynn")
+            if (this._modelKind == "tinynn")
             {
-                TinyNNModel nn = (TinyNNModel)_originalModel;
-
+                TinyNNModel nn = (TinyNNModel)this._originalModel;
                 return nn.ToPayload();
+            }
+            else if (this._modelKind == "tinytransformer")
+            {
+                TinyTransformerModel tf = (TinyTransformerModel)this._originalModel;
+                return tf.GetPayloadForCheckpoint();
+            }
+            else if (this._modelKind == "trigram" || this._modelKind == "bigram")
+            {
+                return ((ILanguageModel)this._originalModel).GetPayloadForCheckpoint();
             }
             else
             {
-                if (_modelKind == "tinytransformer")
-                {
-                    TinyTransformerModel tf = (TinyTransformerModel)_originalModel;
-
-                    return tf.GetPayloadForCheckpoint();
-                }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
         }
 
         public string GetContractFingerprint()
         {
-            return "LanguageModelAdapter-Integration";
+            return "LanguageModelAdapter-1.0.0";
         }
     }
 }

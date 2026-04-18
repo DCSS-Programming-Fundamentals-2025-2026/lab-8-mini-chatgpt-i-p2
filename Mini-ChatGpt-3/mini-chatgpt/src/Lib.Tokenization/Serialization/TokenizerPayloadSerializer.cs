@@ -26,7 +26,6 @@ public static class TokenizerPayloadSerializer
             }
             vocab.LoadFromPayload(charsList);
         }
-
         return vocab;
     }
     
@@ -51,7 +50,6 @@ public static class TokenizerPayloadSerializer
             }
             vocab.LoadFromPayload(wordsList);
         }
-
         return vocab;
     }
 }

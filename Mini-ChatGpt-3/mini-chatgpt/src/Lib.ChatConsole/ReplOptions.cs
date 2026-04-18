@@ -11,7 +11,7 @@
         public ReplOptions()
         {
             Temperature = 0.5f;
-            TopK = 10;
+            TopK = 5;
             MaxTokens = 10;
             Seed = null;
             IsRunning = true;

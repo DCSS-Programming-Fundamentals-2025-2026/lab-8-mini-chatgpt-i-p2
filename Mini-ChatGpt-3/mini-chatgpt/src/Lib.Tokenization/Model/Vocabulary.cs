@@ -7,10 +7,7 @@ public class Vocabulary
 
     public int Size 
     { 
-        get 
-        { 
-            return _charToId.Count; 
-        } 
+        get { return _charToId.Count; } 
     }
 
     public const int UnkId = 0;
@@ -67,7 +64,6 @@ public class Vocabulary
         {
             list.Add(GetChar(i).ToString());
         }
-
         return list;
     }
 

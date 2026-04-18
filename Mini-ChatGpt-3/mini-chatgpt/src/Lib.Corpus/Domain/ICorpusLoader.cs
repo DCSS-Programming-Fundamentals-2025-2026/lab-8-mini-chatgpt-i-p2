@@ -1,4 +1,9 @@
-public interface ICorpusLoader
+using Lib.Corpus.Configuration;
+
+namespace Lib.Corpus.Domain
 {
-    CorpusClass Load(string path, CorpusLoadOptions options);
+    public interface ICorpusLoader
+    {
+        CorpusClass Load(string path, CorpusLoadOptions options);
+    }
 }

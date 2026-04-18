@@ -1,5 +1,4 @@
-﻿
-using Lib.MathCore.Calculators;
+﻿using Lib.MathCore.Calculators;
 using Lib.MathCore.Sampling;
 using Lib.MathCore.Utilities;
 

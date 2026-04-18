@@ -1,11 +1,14 @@
-public record CorpusClass
+namespace Lib.Corpus.Domain
 {
-    public string? TrainText { get; }
-    public string? ValText { get; }
-
-    public CorpusClass(string TrainText, string ValText)
+    public record CorpusClass
     {
-        this.TrainText = TrainText;
-        this.ValText = ValText;
+        public string? TrainText { get; }
+        public string? ValText { get; }
+
+        public CorpusClass(string TrainText, string ValText)
+        {
+            this.TrainText = TrainText;
+            this.ValText = ValText;
+        }
     }
 }

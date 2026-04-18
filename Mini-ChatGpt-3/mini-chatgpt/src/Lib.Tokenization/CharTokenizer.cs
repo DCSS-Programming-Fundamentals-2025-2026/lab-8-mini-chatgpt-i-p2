@@ -6,6 +6,12 @@ namespace Lib.Tokenization;
 public class CharTokenizer : ITokenizer
 {
     private readonly Vocabulary _vocabulary;
+    private readonly string Version = "1.0.0";
+    
+    public string GetContractFingerprint()
+    {
+        return Version;
+    }
 
     public CharTokenizer(Vocabulary vocabulary)
     {
@@ -14,10 +20,7 @@ public class CharTokenizer : ITokenizer
 
     public int VocabSize 
     { 
-        get 
-        { 
-            return _vocabulary.Size; 
-        } 
+        get { return _vocabulary.Size; } 
     }
 
     public int[] Encode(string text)
@@ -32,7 +35,6 @@ public class CharTokenizer : ITokenizer
         {
             tokens[i] = _vocabulary.GetId(text[i]);
         }
-
         return tokens;
     }
 
@@ -48,7 +50,6 @@ public class CharTokenizer : ITokenizer
         {
             sb.Append(_vocabulary.GetChar(token));
         }
-
         return sb.ToString();
     }
 

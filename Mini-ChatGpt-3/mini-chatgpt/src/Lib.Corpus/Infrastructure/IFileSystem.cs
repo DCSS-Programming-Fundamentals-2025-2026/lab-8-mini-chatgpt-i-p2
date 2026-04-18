@@ -1,5 +1,8 @@
-public interface IFileSystem
+namespace Lib.Corpus.Configuration
 {
-    public string ReadAllText(string path);
-    public bool Exists(string path);
+    public interface IFileSystem
+    {
+        public string ReadAllText(string path);
+        public bool Exists(string path);
+    }
 }

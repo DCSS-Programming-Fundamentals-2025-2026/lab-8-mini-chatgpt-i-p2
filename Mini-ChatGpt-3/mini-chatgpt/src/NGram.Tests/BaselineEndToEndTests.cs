@@ -3,6 +3,7 @@ using NGram;
 using NGram.ModelFactory;
 using NGram.Metrics;
 using System.Text.Json;
+using Lib.Corpus.Domain;
 
 namespace NGram.Tests;
 

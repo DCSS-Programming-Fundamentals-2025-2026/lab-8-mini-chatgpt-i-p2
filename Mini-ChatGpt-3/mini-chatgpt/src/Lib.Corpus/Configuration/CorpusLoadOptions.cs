@@ -1,15 +1,18 @@
-public class CorpusLoadOptions
+namespace Lib.Corpus.Configuration
 {
-    public bool LowerCase { get; set; } = true;
-    public double ValidateFraction { get; set; } = 0.1;
-    public string? FallBack { get; set; } = "Запасне значення ";
-
-    public CorpusLoadOptions(bool LowerCase, double ValidateFraction, string FallBack)
+    public class CorpusLoadOptions
     {
-        this.LowerCase = LowerCase;
-        this.ValidateFraction = ValidateFraction;
-        this.FallBack = FallBack;
-    }
+        public bool LowerCase { get; set; } = true;
+        public double ValidateFraction { get; set; } = 0.1;
+        public string? FallBack { get; set; } = "Запасне значення ";
 
-    public CorpusLoadOptions() { }
+        public CorpusLoadOptions(bool lowerCase, double validateFraction, string fallBack)
+        {
+            this.LowerCase = lowerCase;
+            this.ValidateFraction = validateFraction;
+            this.FallBack = fallBack;
+        }
+
+        public CorpusLoadOptions() { }
+    }
 }

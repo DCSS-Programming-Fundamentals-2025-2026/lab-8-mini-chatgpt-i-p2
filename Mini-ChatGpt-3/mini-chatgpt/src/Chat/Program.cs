@@ -1,5 +1,6 @@
 ﻿using Lib.MathCore;
 using Lib.Models.TinyNN.Factories;
+using Lib.Models.TinyTransformer.Factories;
 using Lib.Runtime;
 using Lib.Tokenization;
 using MiniChatGPT.ChatConsole;
@@ -19,42 +20,25 @@ namespace MiniChatGPT.Chat
             Console.InputEncoding = Encoding.UTF8;
 
             Console.WriteLine("\nMiniChatGPT Chat");
-            Console.WriteLine("Оберіть модель для завантаження:");
-            Console.WriteLine("1. Trigram");
-            Console.WriteLine("2. TinyNN");
-            Console.Write("\nВибір: ");
 
-            string choice = Console.ReadLine();
-            string fileName;
-
-            if (choice == "2")
-            {
-                fileName = "checkpoint_nn.json";
-            }
-            else
-            {
-                fileName = "checkpoint_trigram.json";
-            }
+            string fileName = "checkpoint.json";
 
             string baseDir = AppContext.BaseDirectory;
             string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+
             string checkpointPath = Path.Combine(rootDir, "data", fileName);
 
-            float temp;
-            if (choice == "2")
+            if (!File.Exists(checkpointPath))
             {
-                temp = 0.7f;
+                rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", "..", ".."));
+                checkpointPath = Path.Combine(rootDir, "data", fileName);
             }
-            else
-            {
-                temp = 0.3f;
-            }
-            int topK = 5;
 
             if (!File.Exists(checkpointPath))
             {
                 Console.WriteLine($"Файл {fileName} не знайдено!");
-                Console.WriteLine($"Шлях: {checkpointPath}");
+                Console.WriteLine($"Шлях пошуку: {checkpointPath}");
+
                 return 1;
             }
 
@@ -64,35 +48,41 @@ namespace MiniChatGPT.Chat
                 Checkpoint payload = io.Load(checkpointPath);
 
                 JsonElement tokJson = (JsonElement)payload.TokenizerPayload;
-                object rawTokenizer;
-
-                if (payload.TokenizerKind == "word")
-                {
-                    rawTokenizer = new WordTokenizerFactory().FromPayload(tokJson);
-                }
-                else
-                {
-                    rawTokenizer = new CharTokenizerFactory().FromPayload(tokJson);
-                }
+                object rawTokenizer = payload.TokenizerKind == "word"
+                    ? new WordTokenizerFactory().FromPayload(tokJson)
+                    : new CharTokenizerFactory().FromPayload(tokJson);
 
                 ContractTokenizer tokenizer = new TokenizerAdapter(rawTokenizer);
 
                 JsonElement modJson = (JsonElement)payload.ModelPayload;
                 ILanguageModel model = null;
-                bool requiresSoftmax = false;
                 IMathOps mathOps = new MathOpsImpl();
 
                 if (payload.ModelKind == "trigram")
                 {
-                    model = new NGramModelFactory().CreateTrigramModelFromPayload(tokenizer.VocabSize, modJson);
-                    requiresSoftmax = false;
+                    var raw = new NGramModelFactory().CreateTrigramModelFromPayload(tokenizer.VocabSize, modJson);
+                    model = new LanguageModelAdapter(raw, "trigram", tokenizer.VocabSize);
                 }
                 else if (payload.ModelKind == "tinynn")
                 {
-                    object rawTinyNN = new TinyNNModelFactory().FromPayload(modJson, tokenizer.VocabSize, mathOps);
-                    model = new LanguageModelAdapter(rawTinyNN, "tinynn", tokenizer.VocabSize);
-                    requiresSoftmax = true;
+                    var raw = new TinyNNModelFactory().FromPayload(modJson, tokenizer.VocabSize, mathOps);
+                    model = new LanguageModelAdapter(raw, "tinynn", tokenizer.VocabSize);
                 }
+                else if (payload.ModelKind == "tinytransformer")
+                {
+                    var raw = TinyTransformerModelFactory.FromPayload(modJson);
+                    model = new LanguageModelAdapter(raw, "tinytransformer", tokenizer.VocabSize);
+                }
+
+                if (model == null)
+                {
+                    throw new Exception($"Модель '{payload.ModelKind}' не підтримується.");
+                }
+
+                var modelAdapter = (LanguageModelAdapter)model;
+
+                float temp = modelAdapter.RequiresSoftmax ? 0.7f : 0.3f;
+                int topK = 5;
 
                 var sampler = new MiniChatGPT.Sampling.Sampler(mathOps);
                 RuntimeTextGenerator generator = new RuntimeTextGenerator(
@@ -100,18 +90,20 @@ namespace MiniChatGPT.Chat
                     sampler,
                     mathOps,
                     tokenizer,
-                    requiresSoftmax
+                    modelAdapter.RequiresSoftmax
                 );
 
-                Console.WriteLine($"\n Завантажена модель: {fileName}");
-                Console.WriteLine("MiniChatGPT активований");
+                Console.WriteLine($"\n [OK] Завантажено: {payload.ModelKind}");
+                Console.WriteLine($" [Path] {checkpointPath}");
+                Console.WriteLine(" MiniChatGPT активований (введіть текст)");
 
-                new ChatRepl(generator).Run(temp, topK, payload.Seed);
+                new ChatRepl(generator).Run(temp, topK);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Помилка завантаження:");
+                Console.WriteLine("\n Помилка ініціалізації:");
                 Console.WriteLine(ex.Message);
+
                 return 1;
             }
 

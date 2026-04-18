@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Trainer": {
+      "commandName": "Project",
+      "commandLineArgs": "--model trigram --tokenizer word --data \"C:\\Users\\Admin\\KPI\\lab-8-mini-chatgpt-i-p2\\Mini-ChatGpt-3\\mini-chatgpt\\data\\sample.txt\" --out \"C:\\Users\\Admin\\KPI\\lab-8-mini-chatgpt-i-p2\\Mini-ChatGpt-3\\mini-chatgpt\\data\\checkpoint.json\"",
+      "workingDirectory": "."
+    }
+  }
+}

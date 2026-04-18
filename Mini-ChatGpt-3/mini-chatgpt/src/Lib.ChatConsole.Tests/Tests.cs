@@ -105,6 +105,7 @@ namespace Lib.ChatConsole.Tests
         [Test]
         public void TopKCommand_InvalidString_PrintsError()
         {
+            _options.TopK = 10;
             _registry.TryExecute("/topk abc", _context);
 
             Assert.That(_options.TopK, Is.EqualTo(10));
@@ -114,6 +115,7 @@ namespace Lib.ChatConsole.Tests
         [Test]
         public void TopKCommand_FloatInsteadOfInteger_PrintsError()
         {
+            _options.TopK = 10;
             _registry.TryExecute("/topk 5.5", _context);
 
             Assert.That(_options.TopK, Is.EqualTo(10));
@@ -170,6 +172,7 @@ namespace Lib.ChatConsole.Tests
         [Test]
         public void TopKCommand_NegativeInteger_PrintsError()
         {
+            _options.TopK = 10;
             _registry.TryExecute("/topk -10", _context);
 
             Assert.That(_options.TopK, Is.EqualTo(10));

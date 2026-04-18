@@ -139,17 +139,17 @@ namespace NGram
 
         public void FromPayload(JsonElement payload)
         {
-            NGramPayloadMapper data = payload.Deserialize<NGramPayloadMapper>();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            NGramPayloadMapper data = payload.Deserialize<NGramPayloadMapper>(options);
 
-            if (data.BigramProbs != null)
+            if (data?.BigramProbs != null)
             {
                 _bigramProbs = data.BigramProbs;
             }
 
-            if (data.TrigramProbs != null)
+            if (data?.TrigramProbs != null)
             {
                 _trigramProbs.Clear();
-
                 foreach (var entry in data.TrigramProbs)
                 {
                     (int, int) key = (entry.Prev2, entry.Prev1);

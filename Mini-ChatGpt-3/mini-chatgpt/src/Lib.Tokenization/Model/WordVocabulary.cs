@@ -8,10 +8,7 @@ public class WordVocabulary
 
     public int Size 
     { 
-        get 
-        { 
-            return _wordToId.Count; 
-        } 
+        get { return _wordToId.Count; } 
     }
 
     public const int UnkId = 0;
@@ -60,7 +57,6 @@ public class WordVocabulary
                 cleaned.Append(c);
             }
         }
-
         return cleaned.ToString().ToLowerInvariant(); 
     }
 

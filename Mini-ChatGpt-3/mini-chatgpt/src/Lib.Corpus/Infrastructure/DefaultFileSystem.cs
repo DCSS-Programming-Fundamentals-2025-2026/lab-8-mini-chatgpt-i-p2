@@ -1,17 +1,21 @@
-public class DefaultFileSystem : IFileSystem
+using Lib.Corpus.Configuration;
+
+namespace Lib.Corpus.Infrastructure
 {
-    public string ReadAllText(string path)
+    public class DefaultFileSystem : IFileSystem
     {
-        if (string.IsNullOrWhiteSpace(path))
+        public string ReadAllText(string path)
         {
-            throw new FileNotFoundException("Не знайдено шлях");
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new FileNotFoundException("Couldn't find directory");
+            }
+            return File.ReadAllText(path);
         }
 
-        return File.ReadAllText(path);
-    }
-
-    public bool Exists(string path)
-    {
-        return File.Exists(path);
+        public bool Exists(string path)
+        {
+            return File.Exists(path);
+        }
     }
 }

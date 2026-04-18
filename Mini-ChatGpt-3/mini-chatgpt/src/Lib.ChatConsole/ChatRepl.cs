@@ -24,11 +24,11 @@ namespace MiniChatGPT.ChatConsole
             _commandContext = new CommandExecutionContext(_options, _generator, printDelegate);
         }
 
-        public void Run(float temp, int topK, int seed)
+        public void Run(float temp, int topK)
         {
             _options.Temperature = temp;
             _options.TopK = topK;
-            _options.Seed = seed;
+            _options.Seed = null;
             _options.IsRunning = true;
 
             PrintBanner();
@@ -39,7 +39,7 @@ namespace MiniChatGPT.ChatConsole
             while (_options.IsRunning)
             {
                 Console.Write($"[{GetTimestamp()}] You > ");
-                var input = Console.ReadLine()?.Trim();
+                var input = Console.ReadLine()?.Trim().ToLower();
 
                 if (string.IsNullOrWhiteSpace(input))
                 {

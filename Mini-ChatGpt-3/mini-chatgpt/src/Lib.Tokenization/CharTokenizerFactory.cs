@@ -13,14 +13,12 @@ public class CharTokenizerFactory : ITokenizerFactory
         {
             vocab.BuildFromText(text);
         }
-
         return new CharTokenizer(vocab);
     }
 
     public ITokenizer FromPayload(JsonElement payload)
     {
         var vocab = TokenizerPayloadSerializer.DeserializeCharVocab(payload);
-
         return new CharTokenizer(vocab);
     }
 }

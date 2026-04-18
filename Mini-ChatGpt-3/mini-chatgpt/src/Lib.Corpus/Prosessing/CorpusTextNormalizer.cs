@@ -1,17 +1,20 @@
-public class CorpusTextNormalizer
+namespace Lib.Corpus.Processing
 {
-    public string Normalize(bool lowercase, string text)
+    public class CorpusTextNormalizer
     {
-        if (text == null)
+        public string Normalize(bool lowercase, string text)
         {
-            throw new NullReferenceException("Нічого нормалізувати");
-        }
+            if (text == null)
+            {
+                throw new NullReferenceException("Nothing to normalize here");
+            }
 
-        if (lowercase == true)
-        {
-            text = text.ToLower();
-        }
+            if (lowercase == true)
+            {
+                text = text.ToLower();
+            }
 
-        return text;
+            return text;
+        }
     }
 }

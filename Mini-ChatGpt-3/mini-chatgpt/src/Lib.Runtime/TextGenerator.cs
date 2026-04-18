@@ -9,81 +9,59 @@ namespace Lib.Runtime
         private readonly ILanguageModel _model;
         private readonly ISampler _sampler;
         private readonly IMathOps _mathOps;
-        private readonly MiniChatGPT.Contracts.ITokenizer _tokenizer; 
+        private readonly ITokenizer _tokenizer;
         private readonly bool _requiresSoftmax;
 
-        public RuntimeTextGenerator(ILanguageModel model, ISampler sampler, IMathOps mathOps, MiniChatGPT.Contracts.ITokenizer tokenizer, bool requiresSoftmax)
+        public RuntimeTextGenerator(
+            ILanguageModel model,
+            ISampler sampler,
+            IMathOps mathOps,
+            ITokenizer tokenizer,
+            bool requiresSoftmax)
         {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            if (sampler == null)
-            {
-                throw new ArgumentNullException(nameof(sampler));
-            }
-
-            if (mathOps == null)
-            {
-                throw new ArgumentNullException(nameof(mathOps));
-            }
-
-            if (tokenizer == null)
-            {
-                throw new ArgumentNullException(nameof(tokenizer));
-            }
-
-            _model = model;
-            _sampler = sampler;
-            _mathOps = mathOps;
-            _tokenizer = tokenizer;
-            _requiresSoftmax = requiresSoftmax;
+            this._model = model ?? throw new ArgumentNullException(nameof(model));
+            this._sampler = sampler ?? throw new ArgumentNullException(nameof(sampler));
+            this._mathOps = mathOps ?? throw new ArgumentNullException(nameof(mathOps));
+            this._tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
+            this._requiresSoftmax = requiresSoftmax;
         }
 
         public string Generate(string prompt, int maxTokens, float temperature, int topK, int? seed = null)
         {
             if (string.IsNullOrEmpty(prompt))
             {
-                prompt = " ";
+                return string.Empty;
             }
 
-            int[] initialTokens = _tokenizer.Encode(prompt);
+            int[] initialTokens = this._tokenizer.Encode(prompt);
             List<int> currentContext = new List<int>(initialTokens);
             List<int> generatedTokens = new List<int>();
 
-            Random rng = null;
-
-            if (seed.HasValue)
-            {
-                rng = new Random(seed.Value);
-            }
+            Random rng = seed.HasValue ? new Random(seed.Value) : new Random();
 
             for (int i = 0; i < maxTokens; i++)
             {
-                int[] contextArray = currentContext.ToArray();
-                float[] scores = _model.NextTokenScores(contextArray);
+                float[] scores = this._model.NextTokenScores(currentContext.ToArray());
 
                 float[] probabilities;
 
-                if (_requiresSoftmax)
+                if (this._requiresSoftmax)
                 {
-                    probabilities = _mathOps.Softmax(scores);
+                    probabilities = this._mathOps.Softmax(scores);
                 }
                 else
                 {
                     probabilities = scores;
                 }
 
-                int nextTokenId = _sampler.Sample(probabilities, temperature, topK, rng);
+                int nextTokenId = this._sampler.Sample(probabilities, temperature, topK, rng);
 
                 currentContext.Add(nextTokenId);
                 generatedTokens.Add(nextTokenId);
 
-                int[] currentTokenArray = new int[1] { nextTokenId };
-                string decodedToken = _tokenizer.Decode(currentTokenArray);
+                string decodedToken = this._tokenizer.Decode(new int[] { nextTokenId });
 
-                if (generatedTokens.Count >= 5)
+                if (generatedTokens.Count >= 1)
                 {
                     if (decodedToken.Contains("!") || decodedToken.Contains("?"))
                     {
@@ -92,9 +70,7 @@ namespace Lib.Runtime
                 }
             }
 
-            int[] finalGeneratedTokens = generatedTokens.ToArray();
-
-            return _tokenizer.Decode(finalGeneratedTokens);
+            return this._tokenizer.Decode(generatedTokens.ToArray());
         }
     }
 }
