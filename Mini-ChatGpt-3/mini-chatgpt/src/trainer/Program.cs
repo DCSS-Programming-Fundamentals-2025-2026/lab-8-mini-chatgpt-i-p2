@@ -11,6 +11,7 @@ using Lib.Models.TinyNN.Factories;
 using Lib.Models.TinyTransformer;
 using Lib.Models.TinyTransformer.Configuration;
 using Lib.Models.TinyTransformer.Factories;
+using Lib.Models.TinyTransformer.Training;
 using Lib.Tokenization;
 using MiniChatGPT.Contracts;
 using NGram;
@@ -135,11 +136,41 @@ namespace Trainer
             }
             else if (opts.Model.ToLower() == "tinytransformer")
             {
-                var tfConfig = new TinyTransformerConfig(tokenizer.VocabSize, 64, 2, 8, opts.Seed);
-                TinyTransformerModel model = TinyTransformerModelFactory.CreateAuto(tfConfig);
+                TinyTransformerModel model;
+                if (File.Exists(opts.Out))
+                {
+                    Checkpoint oldCheckpoint = json.Load(opts.Out);
+
+                    if (oldCheckpoint.ModelKind.ToLower() == "tinytransformer")
+                    {
+                        JsonElement payload = (JsonElement)oldCheckpoint.ModelPayload;
+                        model = TinyTransformerModelFactory.FromPayload(payload);
+                    }
+                    else
+                    {
+                        var tfConfig = new TinyTransformerConfig(tokenizer.VocabSize, 16, 1, 8, opts.Seed);
+                        model = TinyTransformerModelFactory.CreateAuto(tfConfig);
+                    }
+                }
+                else
+                {
+                    var tfConfig = new TinyTransformerConfig(tokenizer.VocabSize, 16, 1, 8, opts.Seed);
+                    model = TinyTransformerModelFactory.CreateAuto(tfConfig);
+                }
                 ModelVer = model.GetContractFingerprint();
                 Console.WriteLine("TinyTransformer створено");
+                
+                for (int i = 0; i < opts.Epochs; i++)
+                {
+                    for (int j = 0; j < codedTrainTokens.Length - model._config.ContextSize; j++)
+                    {
+                        ReadOnlySpan<int> context = new ReadOnlySpan<int>(codedTrainTokens, j, model._config.ContextSize);
+                        int target = codedTrainTokens[j + model._config.ContextSize];
 
+                        Training.Train(model, context, target, opts.LearningRate);
+                    }
+                }
+                
                 Checkpoint checkpoint = new Checkpoint(opts.Model, opts.Tokenizer, tokenizer.GetPayloadForCheckpoint(), model.GetPayloadForCheckpoint(), opts.Seed, GenerateFingerprintChain(CorpusVer, TokenizerVer, ModelVer));
                 json.Save(opts.Out, checkpoint);
             }

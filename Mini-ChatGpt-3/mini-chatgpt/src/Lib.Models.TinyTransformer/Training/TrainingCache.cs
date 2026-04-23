@@ -8,6 +8,7 @@ public class TrainingCache
     public float[][] V;
     public float[][] Attn;
     public float[][] Proj;
+    public float[] Hidden;
     public float[] FirstLinearOutput;
     public float[] ReluOutput;
     public float[] SecondLinearOutput;

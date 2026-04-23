@@ -1,22 +1,21 @@
-﻿using System.Data;
-using Lib.Models.TinyTransformer.State;
+﻿using Lib.Models.TinyTransformer.State;
 
 namespace Lib.Models.TinyTransformer.Training;
 
 public class Training
 {
-    public static void Train(TinyTransformerModel model, int[] context, int targetIndex, float learningRate)
+    public static void Train(TinyTransformerModel model, ReadOnlySpan<int> context, int targetIndex, float learningRate)
     {
         TrainingCache cache = new TrainingCache();
         var logits = model.NextTokenScores(context, true, cache);
         
         var loss = CalculateLoss(logits, targetIndex);
 
-        WeightsGradients weightsGradients = new WeightsGradients(model.config.EmbeddingSize, model.config.VocabSize);
+        WeightsGradients weightsGradients = new WeightsGradients(model._config.EmbeddingSize, model._config.VocabSize);
         
         model.BackPropagation(loss, cache, weightsGradients);
         
-        Update(model.config.Weights, weightsGradients, learningRate);
+        Update(model._config.Weights, weightsGradients, learningRate);
     }
 
     public static float[] CalculateLoss(float[] logits, int targetIndex)

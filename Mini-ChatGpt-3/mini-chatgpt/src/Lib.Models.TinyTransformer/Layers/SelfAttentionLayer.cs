@@ -146,9 +146,9 @@ public class SelfAttentionLayer
     {
         float[][] x = new float[context.Length > _config.ContextSize ? _config.ContextSize : context.Length][];
 
-        if (context.Length > 8)
+        if (context.Length > _config.ContextSize)
         {
-            context = context.TakeLast(8).ToArray();
+            context = context.TakeLast(_config.ContextSize).ToArray();
         }
 
         for (int i = 0; i < x.Length; i++)

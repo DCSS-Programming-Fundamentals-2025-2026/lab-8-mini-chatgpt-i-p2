@@ -25,7 +25,7 @@ public class WeightsGradients
         for (int i = 0; i < embeddingSize; i++)
         {
             dOutputW[i] = new float[vocabSize];
-            dFfn1[i] = new float[embeddingSize];
+            dFfn1[i] = new float[embeddingSize * 4];
             dQ[i] = new float[embeddingSize];
             dV[i] = new float[embeddingSize];
             dK[i] = new float[embeddingSize];

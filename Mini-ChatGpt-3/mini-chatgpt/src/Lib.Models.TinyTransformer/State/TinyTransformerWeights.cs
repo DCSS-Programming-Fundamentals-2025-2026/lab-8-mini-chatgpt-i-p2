@@ -1,4 +1,5 @@
-﻿using Lib.Models.TinyTransformer.Configuration;
+﻿using System.Text.Json.Serialization;
+using Lib.Models.TinyTransformer.Configuration;
 
 namespace Lib.Models.TinyTransformer.State;
 
@@ -32,6 +33,9 @@ public class TinyTransformerWeights
 
         return res;
     }
+    
+    [JsonConstructor]
+    public TinyTransformerWeights() { }
 
     public TinyTransformerWeights(int embeddingSize, int vocabSize)
     {

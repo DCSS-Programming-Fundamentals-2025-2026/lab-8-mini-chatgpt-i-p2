@@ -1,19 +1,26 @@
-﻿using Lib.Models.TinyTransformer.State;
+﻿using System.Text.Json.Serialization;
+using Lib.Models.TinyTransformer.State;
 
 namespace Lib.Models.TinyTransformer.Configuration;
 
 public class TinyTransformerConfig
 {
-    public float[][] TokenEmbeddings = [];
     public int VocabSize { get; set; }
     public int EmbeddingSize { get; set; }
     public int HeadCount { get; set; }
     public int ContextSize { get; set; }
     public int Seed { get; set; }
     public TinyTransformerWeights Weights { get; set; }
+    public float[][] TokenEmbeddings { get; set; }
 
+    [JsonConstructor]
+    public TinyTransformerConfig()
+    {
+    }
+    
     public TinyTransformerConfig(int vocabSize, int embeddingSize = 16, int headCount = 1, int contextSize = 8,
-        int seed = 42, TinyTransformerWeights weights = null)
+        int seed = 42, TinyTransformerWeights weights = null, float[][] tokenEmbeddings = null)
+
     {
         VocabSize = vocabSize;
         EmbeddingSize = embeddingSize;
@@ -24,9 +31,12 @@ public class TinyTransformerConfig
         {
             Weights = new TinyTransformerWeights(embeddingSize, vocabSize);
         }
-        else
+        else Weights = weights;
+
+        if (tokenEmbeddings == null)
         {
-            Weights = weights;
+            TokenEmbeddings = TinyTransformerWeights.GenerateMatrix(vocabSize, embeddingSize);
         }
+        else TokenEmbeddings = tokenEmbeddings;
     }
 }

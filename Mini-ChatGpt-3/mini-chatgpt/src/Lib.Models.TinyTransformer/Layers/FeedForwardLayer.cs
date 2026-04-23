@@ -16,6 +16,11 @@ public class FeedForwardLayer
 
     public float[] Project(float[] hidden, bool isTraining = false, TrainingCache cache = null)
     {
+        if (isTraining)
+        {
+            cache.Hidden =  hidden;
+        }
+        
         float[][] hiddenHelper = new float[1][];
         hiddenHelper[0] = hidden;
 
@@ -39,23 +44,24 @@ public class FeedForwardLayer
 
     public float[] Backward(float[] gradient, TrainingCache cache, WeightsGradients weightsGradients)
     {
-        var secondGrad = LinearBackward(cache.ThirdLinearOutput, gradient,
+        var secondGrad = LinearBackward(cache.SecondLinearOutput, gradient,
             _config.Weights.OutputW, 
             weightsGradients.dOutputW, weightsGradients.dOutputBias);
         
-        var thirdGrad = LinearBackward(cache.SecondLinearOutput, secondGrad,
+        
+        var thirdGrad = LinearBackward(cache.ReluOutput, secondGrad,
             _config.Weights.ffn2, 
             weightsGradients.dFfn2, weightsGradients.dFfn2Bias);
         
         for (int i = 0; i < thirdGrad.Length; i++)
         {
-            if (cache.ReluOutput[i] == 0.0f) 
+            if (cache.ReluOutput[i] <= 0.0f) 
             {
                 thirdGrad[i] = 0.0f;
             }
         }
-        
-        var fourthGrad = LinearBackward(cache.FirstLinearOutput, thirdGrad,
+
+        var fourthGrad = LinearBackward(cache.Hidden, thirdGrad,
             _config.Weights.ffn1, 
             weightsGradients.dFfn1, weightsGradients.dFfn1Bias);
         
