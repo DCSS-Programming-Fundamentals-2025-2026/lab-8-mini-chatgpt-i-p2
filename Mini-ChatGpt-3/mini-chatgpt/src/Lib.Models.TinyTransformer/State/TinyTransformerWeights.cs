@@ -1,4 +1,5 @@
-﻿using Lib.Models.TinyTransformer.Configuration;
+﻿using System.Text.Json.Serialization;
+using Lib.Models.TinyTransformer.Configuration;
 
 namespace Lib.Models.TinyTransformer.State;
 
@@ -15,7 +16,11 @@ public class TinyTransformerWeights
     public float[] ffn1Bias { get; set; }
     public float[] ffn2Bias { get; set; }
     public float[] OutputBias { get; set; }
-
+    
+    [JsonConstructor] 
+    public TinyTransformerWeights() 
+    { 
+    }
     public static float[][] GenerateMatrix(int rows, int cols)
     {
         float[][] res = new float[rows][];
