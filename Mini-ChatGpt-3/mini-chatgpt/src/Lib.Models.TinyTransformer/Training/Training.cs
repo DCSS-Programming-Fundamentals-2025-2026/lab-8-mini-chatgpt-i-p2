@@ -8,7 +8,6 @@ public class Training
     {
         TrainingCache cache = new TrainingCache();
         var logits = model.NextTokenScores(context, true, cache);
-        
         var loss = CalculateLoss(logits, targetIndex);
 
         WeightsGradients weightsGradients = new WeightsGradients(model._config.EmbeddingSize, model._config.VocabSize);

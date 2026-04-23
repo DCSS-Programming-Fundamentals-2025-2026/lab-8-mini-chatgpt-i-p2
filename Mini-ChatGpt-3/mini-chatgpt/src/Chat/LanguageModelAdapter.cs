@@ -1,6 +1,7 @@
 ﻿using MiniChatGPT.Contracts;
 using Lib.Models.TinyNN;
 using Lib.Models.TinyTransformer;
+using Lib.Models.TinyTransformer.Training;
 
 namespace MiniChatGPT.Chat
 {

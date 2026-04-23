@@ -18,14 +18,15 @@ public class FeedForwardLayer
     {
         if (isTraining)
         {
-            cache.Hidden =  hidden;
+            cache.Hidden =  hidden.ToArray();
         }
         
         float[][] hiddenHelper = new float[1][];
         hiddenHelper[0] = hidden;
 
         float[][] firstLinear = Linear(hiddenHelper, LinearAction.Expanse);
-        if(isTraining) cache.FirstLinearOutput = firstLinear[0];
+
+        if(isTraining) cache.FirstLinearOutput = firstLinear[0].ToArray();
         
         Relu(firstLinear[0]);
         
@@ -34,9 +35,8 @@ public class FeedForwardLayer
         float[][] thirdLinear = Linear(secondLinear, LinearAction.Vocab);
         if(isTraining)
         {
-            cache.ReluOutput = firstLinear[0];
-            cache.SecondLinearOutput = secondLinear[0];
-            cache.ThirdLinearOutput = thirdLinear[0];
+            cache.ReluOutput = firstLinear[0].ToArray();
+            cache.SecondLinearOutput = secondLinear[0].ToArray();
         }
         
         return thirdLinear[0];
@@ -52,10 +52,10 @@ public class FeedForwardLayer
         var thirdGrad = LinearBackward(cache.ReluOutput, secondGrad,
             _config.Weights.ffn2, 
             weightsGradients.dFfn2, weightsGradients.dFfn2Bias);
-        
+
         for (int i = 0; i < thirdGrad.Length; i++)
         {
-            if (cache.ReluOutput[i] <= 0.0f) 
+            if (cache.FirstLinearOutput[i] <= 0.0f) 
             {
                 thirdGrad[i] = 0.0f;
             }

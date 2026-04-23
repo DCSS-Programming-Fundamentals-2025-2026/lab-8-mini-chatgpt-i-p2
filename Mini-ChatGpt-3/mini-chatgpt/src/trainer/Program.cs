@@ -140,7 +140,7 @@ namespace Trainer
                 if (File.Exists(opts.Out))
                 {
                     Checkpoint oldCheckpoint = json.Load(opts.Out);
-
+                
                     if (oldCheckpoint.ModelKind.ToLower() == "tinytransformer")
                     {
                         JsonElement payload = (JsonElement)oldCheckpoint.ModelPayload;

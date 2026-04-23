@@ -20,7 +20,7 @@ public class MatrixHelper
             {
                 float sum = 0;
 
-                for (int k = 0; k < matrix.Length; k++)
+                for (int k = 0; k < matrix[0].Length; k++)
                 {
                     sum += matrix[i][k] * weights[k][j];
                 }

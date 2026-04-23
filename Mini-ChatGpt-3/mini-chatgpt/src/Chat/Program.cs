@@ -21,7 +21,7 @@ namespace MiniChatGPT.Chat
 
             Console.WriteLine("\nMiniChatGPT Chat");
 
-            string fileName = "checkpoint.json";
+            string fileName = "checkpossint.json";
 
             string baseDir = AppContext.BaseDirectory;
             string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));

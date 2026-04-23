@@ -42,12 +42,13 @@ public class SelfAttentionLayer
 
         if (isTraining)
         {
-            cache.X = x;
-            cache.Q = Q;
-            cache.K = K;
-            cache.V = V;
-            cache.Attn = attn;
-            cache.Proj = proj;
+            cache.X = x.Select(row => row.ToArray()).ToArray();
+            cache.Q = Q.Select(row => row.ToArray()).ToArray();
+            cache.K = K.Select(row => row.ToArray()).ToArray();
+            cache.V = V.Select(row => row.ToArray()).ToArray();
+            cache.Attn = attn.Select(row => row.ToArray()).ToArray();
+            cache.OutMatrix = outMatrix.Select(row => row.ToArray()).ToArray();
+            cache.Proj = proj.Select(row => row.ToArray()).ToArray();
         }
 
         //step 7
@@ -57,7 +58,7 @@ public class SelfAttentionLayer
     public void Backward(float[] fourthGrad, TrainingCache cache, WeightsGradients weightsGrads)
     {
         float[] gradOutMatrixRow = AttentionBackward(
-            cache.Proj[cache.Proj.Length - 1],
+            cache.OutMatrix[cache.OutMatrix.Length - 1],
             fourthGrad,
             _config.Weights.wO, weightsGrads.dO
         );
