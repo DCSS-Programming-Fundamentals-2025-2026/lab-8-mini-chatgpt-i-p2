@@ -144,7 +144,7 @@ namespace Trainer
                     if (oldCheckpoint.ModelKind.ToLower() == "tinytransformer")
                     {
                         JsonElement payload = (JsonElement)oldCheckpoint.ModelPayload;
-                        model = TinyTransformerModelFactory.FromPayload(payload);
+                        model = TinyTransformerModelFactory.FromPayload(payload, tokenizer.VocabSize, mathOps);
                     }
                     else
                     {

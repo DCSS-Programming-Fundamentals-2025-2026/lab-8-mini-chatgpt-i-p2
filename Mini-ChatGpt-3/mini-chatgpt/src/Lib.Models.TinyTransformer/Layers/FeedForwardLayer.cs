@@ -25,31 +25,20 @@ public class FeedForwardLayer
         hiddenHelper[0] = hidden;
 
         float[][] firstLinear = Linear(hiddenHelper, LinearAction.Expanse);
-<<<<<<< HEAD
-        if(isTraining) cache.FirstLinearOutput = firstLinear[0];
-=======
+
 
         if(isTraining) cache.FirstLinearOutput = firstLinear[0].ToArray();
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
         
         Relu(firstLinear[0]);
         
         float[][] secondLinear = Linear(firstLinear, LinearAction.Compress);
 
         float[][] thirdLinear = Linear(secondLinear, LinearAction.Vocab);
-<<<<<<< HEAD
-        if(isTraining)
-        {
-            cache.ReluOutput = firstLinear[0];
-            cache.SecondLinearOutput = secondLinear[0];
-            cache.ThirdLinearOutput = thirdLinear[0];
-=======
         
         if(isTraining)
         {
             cache.ReluOutput = firstLinear[0].ToArray();
             cache.SecondLinearOutput = secondLinear[0].ToArray();
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
         }
         
         return thirdLinear[0];
@@ -57,29 +46,6 @@ public class FeedForwardLayer
 
     public float[] Backward(float[] gradient, TrainingCache cache, WeightsGradients weightsGradients)
     {
-<<<<<<< HEAD
-        var secondGrad = LinearBackward(cache.ThirdLinearOutput, gradient,
-            _config.Weights.OutputW, 
-            weightsGradients.dOutputW, weightsGradients.dOutputBias);
-        
-        var thirdGrad = LinearBackward(cache.SecondLinearOutput, secondGrad,
-            _config.Weights.ffn2, 
-            weightsGradients.dFfn2, weightsGradients.dFfn2Bias);
-        
-        for (int i = 0; i < thirdGrad.Length; i++)
-        {
-            if (cache.ReluOutput[i] == 0.0f) 
-            {
-                thirdGrad[i] = 0.0f;
-            }
-        }
-        
-        var fourthGrad = LinearBackward(cache.FirstLinearOutput, thirdGrad,
-            _config.Weights.ffn1, 
-            weightsGradients.dFfn1, weightsGradients.dFfn1Bias);
-        
-        return fourthGrad;
-=======
         var outputWGradient = LinearBackward(cache.SecondLinearOutput, gradient,
             _config.Weights.OutputW, 
             weightsGradients.dOutputW, weightsGradients.dOutputBias);
@@ -102,7 +68,6 @@ public class FeedForwardLayer
             weightsGradients.dFfn1, weightsGradients.dFfn1Bias);
         
         return ffn1Gradient;
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
     }
     
     public static float[] LinearBackward(

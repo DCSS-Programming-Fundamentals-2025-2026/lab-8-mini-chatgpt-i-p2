@@ -1,4 +1,5 @@
-﻿using Lib.MathCore;
+﻿using CommandLine;
+using Lib.MathCore;
 using Lib.Models.TinyNN.Factories;
 using Lib.Models.TinyTransformer.Factories;
 using Lib.Runtime;
@@ -8,7 +9,6 @@ using MiniChatGPT.Contracts;
 using NGram.ModelFactory;
 using System.Text;
 using System.Text.Json;
-using CommandLine;
 using ContractTokenizer = MiniChatGPT.Contracts.ITokenizer;
 
 namespace MiniChatGPT.Chat
@@ -27,24 +27,23 @@ namespace MiniChatGPT.Chat
 
             Console.WriteLine("\nMiniChatGPT Chat");
 
-            string fileName = opt.Checkpoint;
+            string rawPath = opt.Checkpoint;
 
-            string baseDir = AppContext.BaseDirectory;
-            string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
-
-            string checkpointPath = Path.Combine(rootDir, "data", fileName);
+            string checkpointPath = Path.GetFullPath(rawPath);
 
             if (!File.Exists(checkpointPath))
             {
-                rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", "..", ".."));
-                checkpointPath = Path.Combine(rootDir, "data", fileName);
+                string baseDir = AppContext.BaseDirectory;
+                string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+
+                checkpointPath = Path.GetFullPath(Path.Combine(rootDir, rawPath));
+                checkpointPath = checkpointPath.Replace("data\\data", "data").Replace("data/data", "data");
             }
 
             if (!File.Exists(checkpointPath))
             {
-                Console.WriteLine($"Файл {fileName} не знайдено!");
+                Console.WriteLine($"Файл {opt.Checkpoint} не знайдено!");
                 Console.WriteLine($"Шлях пошуку: {checkpointPath}");
-
                 return;
             }
 
@@ -76,7 +75,7 @@ namespace MiniChatGPT.Chat
                 }
                 else if (payload.ModelKind == "tinytransformer")
                 {
-                    var raw = TinyTransformerModelFactory.FromPayload(modJson);
+                    var raw = TinyTransformerModelFactory.FromPayload(modJson, tokenizer.VocabSize, mathOps);
                     model = new LanguageModelAdapter(raw, "tinytransformer", tokenizer.VocabSize);
                 }
                 else if (payload.ModelKind == "bigram")

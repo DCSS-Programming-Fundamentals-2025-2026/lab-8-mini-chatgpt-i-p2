@@ -51,7 +51,7 @@ namespace Lib.ChatConsole.Tests
         {
             _registry.TryExecute("/temp aaa", _context);
 
-            Assert.That(_options.Temperature, Is.EqualTo(0.5f));
+            Assert.That(_options.Temperature, Is.EqualTo(0.3f));
             Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
         }
 
@@ -184,7 +184,7 @@ namespace Lib.ChatConsole.Tests
         {
             _registry.TryExecute("/temp -1.5", _context);
 
-            Assert.That(_options.Temperature, Is.EqualTo(0.5f));
+            Assert.That(_options.Temperature, Is.EqualTo(0.3f));
             Assert.That(_printedMessages[0], Does.Contain("некоректне число"));
         }
 

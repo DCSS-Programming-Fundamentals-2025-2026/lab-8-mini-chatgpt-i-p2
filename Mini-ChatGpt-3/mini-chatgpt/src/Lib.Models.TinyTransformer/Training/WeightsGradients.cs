@@ -9,10 +9,8 @@ public class WeightsGradients
     public float[] dFfn2Bias;
     public float[] dOutputBias;
 
-<<<<<<< HEAD
-=======
+
     public float[][] dE;
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
     public float[][] dQ;
     public float[][] dV;
     public float[][] dK;
@@ -29,11 +27,7 @@ public class WeightsGradients
         for (int i = 0; i < embeddingSize; i++)
         {
             dOutputW[i] = new float[vocabSize];
-<<<<<<< HEAD
-            dFfn1[i] = new float[embeddingSize];
-=======
             dFfn1[i] = new float[embeddingSize * 4];
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
             dQ[i] = new float[embeddingSize];
             dV[i] = new float[embeddingSize];
             dK[i] = new float[embeddingSize];
@@ -46,15 +40,12 @@ public class WeightsGradients
             dFfn2[i] = new float[embeddingSize];
         }
 
-<<<<<<< HEAD
-=======
         dE = new float[vocabSize][];
         for (int i = 0; i < vocabSize; i++)
         {
             dE[i] = new float[embeddingSize];
         }
 
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
         dFfn1Bias = new float[embeddingSize * 4];
         dFfn2Bias = new float[embeddingSize];
         dOutputBias = new float[vocabSize];

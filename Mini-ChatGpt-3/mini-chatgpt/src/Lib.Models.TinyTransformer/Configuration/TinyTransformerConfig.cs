@@ -1,5 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Lib.MathCore;
 using Lib.Models.TinyTransformer.State;
+using System.Text.Json.Serialization;
 
 namespace Lib.Models.TinyTransformer.Configuration;
 
@@ -9,6 +10,7 @@ public class TinyTransformerConfig
     public int EmbeddingSize { get; set; }
     public int HeadCount { get; set; }
     public int ContextSize { get; set; }
+    public IMathOps MathOps { get; set; }
     public int Seed { get; set; }
     public TinyTransformerWeights Weights { get; set; }
     public float[][] TokenEmbeddings { get; set; }

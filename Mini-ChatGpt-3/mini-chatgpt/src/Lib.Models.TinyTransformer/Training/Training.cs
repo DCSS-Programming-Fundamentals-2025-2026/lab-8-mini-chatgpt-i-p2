@@ -1,28 +1,10 @@
-<<<<<<< HEAD
-﻿using System.Data;
-=======
-﻿using Lib.MathCore;
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
+using Lib.MathCore;
 using Lib.Models.TinyTransformer.State;
 
 namespace Lib.Models.TinyTransformer.Training;
 
 public class Training
 {
-<<<<<<< HEAD
-    public static void Train(TinyTransformerModel model, int[] context, int targetIndex, float learningRate)
-    {
-        TrainingCache cache = new TrainingCache();
-        var logits = model.NextTokenScores(context, true, cache);
-        
-        var loss = CalculateLoss(logits, targetIndex);
-
-        WeightsGradients weightsGradients = new WeightsGradients(model.config.EmbeddingSize, model.config.VocabSize);
-        
-        model.BackPropagation(loss, cache, weightsGradients);
-        
-        Update(model.config.Weights, weightsGradients, learningRate);
-=======
     public static void Train(TinyTransformerModel model, ReadOnlySpan<int> context, int targetIndex, float learningRate)
     {
         TrainingCache cache = new TrainingCache();
@@ -35,7 +17,6 @@ public class Training
         model.BackPropagation(gradient, cache, weightsGradients);
 
         Update(model._config.TokenEmbeddings, model._config.Weights, weightsGradients, learningRate);
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
     }
 
     public static float[] CalculateLoss(float[] logits, int targetIndex)
@@ -49,16 +30,9 @@ public class Training
 
         return loss;
     }
-<<<<<<< HEAD
-    
-    public static void Update(TinyTransformerWeights weights, WeightsGradients grads, float learningRate)
-    {
-=======
-
     public static void Update(float[][] tE, TinyTransformerWeights weights, WeightsGradients grads, float learningRate)
     {
         UpdateMatrix(tE, grads.dE, learningRate);
->>>>>>> origin/TinyTransformerTrainingAndIntegreation
         UpdateMatrix(weights.wQ, grads.dQ, learningRate);
         UpdateMatrix(weights.wK, grads.dK, learningRate);
         UpdateMatrix(weights.wV, grads.dV, learningRate);

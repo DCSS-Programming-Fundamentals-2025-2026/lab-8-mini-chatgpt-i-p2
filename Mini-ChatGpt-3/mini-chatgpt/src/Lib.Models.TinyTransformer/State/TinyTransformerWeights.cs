@@ -6,6 +6,9 @@ namespace Lib.Models.TinyTransformer.State;
 public class TinyTransformerWeights
 {
     public static Random rnd = new Random(42);
+
+    [JsonPropertyName("embeddingWeight")]
+    public float[][] EmbeddingWeight { get; set; }
     public float[][] wQ { get; set; }
     public float[][] wK { get; set; }
     public float[][] wV { get; set; }
