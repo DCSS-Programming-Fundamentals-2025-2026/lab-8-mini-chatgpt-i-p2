@@ -2,6 +2,7 @@
 
 public class TrainingCache
 {
+    public int[] Context { get; set; }
     public float[][] X { get; set; }
     public float[][] Q { get; set; }
     public float[][] K { get; set; }

@@ -33,6 +33,7 @@ public class FeedForwardLayer
         float[][] secondLinear = Linear(firstLinear, LinearAction.Compress);
 
         float[][] thirdLinear = Linear(secondLinear, LinearAction.Vocab);
+        
         if(isTraining)
         {
             cache.ReluOutput = firstLinear[0].ToArray();
@@ -44,28 +45,28 @@ public class FeedForwardLayer
 
     public float[] Backward(float[] gradient, TrainingCache cache, WeightsGradients weightsGradients)
     {
-        var secondGrad = LinearBackward(cache.SecondLinearOutput, gradient,
+        var outputWGradient = LinearBackward(cache.SecondLinearOutput, gradient,
             _config.Weights.OutputW, 
             weightsGradients.dOutputW, weightsGradients.dOutputBias);
         
         
-        var thirdGrad = LinearBackward(cache.ReluOutput, secondGrad,
+        var ffn2Gradient = LinearBackward(cache.ReluOutput, outputWGradient,
             _config.Weights.ffn2, 
             weightsGradients.dFfn2, weightsGradients.dFfn2Bias);
 
-        for (int i = 0; i < thirdGrad.Length; i++)
+        for (int i = 0; i < ffn2Gradient.Length; i++)
         {
             if (cache.FirstLinearOutput[i] <= 0.0f) 
             {
-                thirdGrad[i] = 0.0f;
+                ffn2Gradient[i] = 0.0f;
             }
         }
 
-        var fourthGrad = LinearBackward(cache.Hidden, thirdGrad,
+        var ffn1Gradient = LinearBackward(cache.Hidden, ffn2Gradient,
             _config.Weights.ffn1, 
             weightsGradients.dFfn1, weightsGradients.dFfn1Bias);
         
-        return fourthGrad;
+        return ffn1Gradient;
     }
     
     public static float[] LinearBackward(

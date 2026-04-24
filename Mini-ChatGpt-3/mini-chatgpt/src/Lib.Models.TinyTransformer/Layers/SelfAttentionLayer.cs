@@ -19,29 +19,24 @@ public class SelfAttentionLayer
 
     public float[] Compute(int[] context, bool isTraining = false, TrainingCache cache = null)
     {
-        //step 1
         float[][] x = InitXmatrix(context);
-
-        //step 2
+        
         float[][] Q = InitMatrix(x, QKV.Q);
         float[][] K = InitMatrix(x, QKV.K);
         float[][] V = InitMatrix(x, QKV.V);
-
-        //step 3
+        
         float[][] scores = MatrixHelper.MultiplyMatrix(Q, MatrixHelper.TransposeMatrix(K));
         EachElementDivideBySquareRootOfEmbeddingSizeWithMask(scores);
-
-        //step 4
+        
         float[][] attn = SoftmaxEachRow(scores);
-
-        //step 5
+        
         float[][] outMatrix = WeightedSum(attn, V);
-
-        //step 6
+        
         float[][] proj = MatrixHelper.MultiplyMatrix(outMatrix, _config.Weights.wO);
 
         if (isTraining)
         {
+            cache.Context = context.ToArray();
             cache.X = x.Select(row => row.ToArray()).ToArray();
             cache.Q = Q.Select(row => row.ToArray()).ToArray();
             cache.K = K.Select(row => row.ToArray()).ToArray();
@@ -50,16 +45,15 @@ public class SelfAttentionLayer
             cache.OutMatrix = outMatrix.Select(row => row.ToArray()).ToArray();
             cache.Proj = proj.Select(row => row.ToArray()).ToArray();
         }
-
-        //step 7
+        
         return proj[proj.Length - 1];
     }
 
-    public void Backward(float[] fourthGrad, TrainingCache cache, WeightsGradients weightsGrads)
+    public void Backward(float[] ffnGradient, TrainingCache cache, WeightsGradients weightsGrads)
     {
         float[] gradOutMatrixRow = AttentionBackward(
             cache.OutMatrix[cache.OutMatrix.Length - 1],
-            fourthGrad,
+            ffnGradient,
             _config.Weights.wO, weightsGrads.dO
         );
         
@@ -110,6 +104,28 @@ public class SelfAttentionLayer
 
         for(int i = 0; i < contextLen; i++)
             AttentionBackward(cache.X[i], gradV[i], _config.Weights.wV, weightsGrads.dV);
+        
+        float[][] dX = new float[contextLen][];
+        for(int i = 0; i < contextLen; i++) dX[i] = new float[_config.EmbeddingSize];
+
+        float[] dX_Q = AttentionBackward(cache.X[contextLen - 1], gradQRow[0], _config.Weights.wQ, weightsGrads.dQ);
+        MatrixHelper.LineSumm(dX[contextLen - 1], dX_Q);
+
+        for(int i = 0; i < contextLen; i++)
+        {
+            float[] dX_K = AttentionBackward(cache.X[i], gradK[i], _config.Weights.wK, weightsGrads.dK);
+            MatrixHelper.LineSumm(dX[i], dX_K);
+
+            float[] dX_V = AttentionBackward(cache.X[i], gradV[i], _config.Weights.wV, weightsGrads.dV);
+            MatrixHelper.LineSumm(dX[i], dX_V);
+        }
+
+        for (int i = 0; i < contextLen; i++)
+        {
+            int tokenIndex = cache.Context[i]; 
+            
+            MatrixHelper.LineSumm(weightsGrads.dE[tokenIndex], dX[i]);
+        }
     }
 
     public static float[] AttentionBackward(

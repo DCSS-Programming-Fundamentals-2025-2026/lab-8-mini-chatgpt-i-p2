@@ -39,6 +39,12 @@ public class WeightsGradients
             dFfn2[i] = new float[embeddingSize];
         }
 
+        dE = new float[vocabSize][];
+        for (int i = 0; i < vocabSize; i++)
+        {
+            dE[i] = new float[embeddingSize];
+        }
+
         dFfn1Bias = new float[embeddingSize * 4];
         dFfn2Bias = new float[embeddingSize];
         dOutputBias = new float[vocabSize];

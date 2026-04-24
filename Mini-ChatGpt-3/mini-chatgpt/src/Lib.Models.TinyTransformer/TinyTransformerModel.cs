@@ -12,9 +12,9 @@ public class TinyTransformerModel
     private readonly string Version = "1.0.0";
     public float[] NextTokenScores(ReadOnlySpan<int> context, bool isTraining = false, TrainingCache cache = null)
     {
-        TransformerBlock block = new TransformerBlock(_config);    
-            
-        return _mathOps.Softmax(block.Forward(context.ToArray(), isTraining, cache));
+        TransformerBlock block = new TransformerBlock(_config);
+
+        return block.Forward(context.ToArray(), isTraining, cache);
     }
 
     public void BackPropagation(float[] gradient, TrainingCache cache, WeightsGradients weightsGradients)

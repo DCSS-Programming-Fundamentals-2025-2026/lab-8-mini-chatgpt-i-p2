@@ -166,7 +166,7 @@ namespace Trainer
                     {
                         ReadOnlySpan<int> context = new ReadOnlySpan<int>(codedTrainTokens, j, model._config.ContextSize);
                         int target = codedTrainTokens[j + model._config.ContextSize];
-
+                
                         Training.Train(model, context, target, opts.LearningRate);
                     }
                 }

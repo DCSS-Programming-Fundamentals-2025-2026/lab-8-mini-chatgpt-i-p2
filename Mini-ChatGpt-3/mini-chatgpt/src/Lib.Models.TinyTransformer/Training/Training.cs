@@ -1,4 +1,5 @@
-﻿using Lib.Models.TinyTransformer.State;
+﻿using Lib.MathCore;
+using Lib.Models.TinyTransformer.State;
 
 namespace Lib.Models.TinyTransformer.Training;
 
@@ -8,13 +9,14 @@ public class Training
     {
         TrainingCache cache = new TrainingCache();
         var logits = model.NextTokenScores(context, true, cache);
-        var loss = CalculateLoss(logits, targetIndex);
+        var probabilites = new MathOpsImpl().Softmax(logits);
+        var gradient = CalculateLoss(probabilites, targetIndex);
 
         WeightsGradients weightsGradients = new WeightsGradients(model._config.EmbeddingSize, model._config.VocabSize);
-        
-        model.BackPropagation(loss, cache, weightsGradients);
-        
-        Update(model._config.Weights, weightsGradients, learningRate);
+
+        model.BackPropagation(gradient, cache, weightsGradients);
+
+        Update(model._config.TokenEmbeddings, model._config.Weights, weightsGradients, learningRate);
     }
 
     public static float[] CalculateLoss(float[] logits, int targetIndex)
@@ -28,9 +30,10 @@ public class Training
 
         return loss;
     }
-    
-    public static void Update(TinyTransformerWeights weights, WeightsGradients grads, float learningRate)
+
+    public static void Update(float[][] tE, TinyTransformerWeights weights, WeightsGradients grads, float learningRate)
     {
+        UpdateMatrix(tE, grads.dE, learningRate);
         UpdateMatrix(weights.wQ, grads.dQ, learningRate);
         UpdateMatrix(weights.wK, grads.dK, learningRate);
         UpdateMatrix(weights.wV, grads.dV, learningRate);
