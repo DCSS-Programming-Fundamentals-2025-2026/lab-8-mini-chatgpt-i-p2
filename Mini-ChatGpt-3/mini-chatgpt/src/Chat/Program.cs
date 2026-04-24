@@ -8,20 +8,26 @@ using MiniChatGPT.Contracts;
 using NGram.ModelFactory;
 using System.Text;
 using System.Text.Json;
+using CommandLine;
 using ContractTokenizer = MiniChatGPT.Contracts.ITokenizer;
 
 namespace MiniChatGPT.Chat
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
+        {
+            Parser.Default.ParseArguments<Options>(args).WithParsed(RunOptions);
+        }
+
+        public static void RunOptions(Options opt)
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 
             Console.WriteLine("\nMiniChatGPT Chat");
 
-            string fileName = "checkpoint.json";
+            string fileName = opt.Checkpoint;
 
             string baseDir = AppContext.BaseDirectory;
             string rootDir = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
@@ -39,7 +45,7 @@ namespace MiniChatGPT.Chat
                 Console.WriteLine($"Файл {fileName} не знайдено!");
                 Console.WriteLine($"Шлях пошуку: {checkpointPath}");
 
-                return 1;
+                return;
             }
 
             try
@@ -86,8 +92,8 @@ namespace MiniChatGPT.Chat
 
                 var modelAdapter = (LanguageModelAdapter)model;
 
-                float temp = modelAdapter.RequiresSoftmax ? 0.7f : 0.3f;
-                int topK = 5;
+                float temp = opt.Temp;
+                int topK = opt.TopK;
 
                 var sampler = new MiniChatGPT.Sampling.Sampler(mathOps);
                 RuntimeTextGenerator generator = new RuntimeTextGenerator(
@@ -108,11 +114,7 @@ namespace MiniChatGPT.Chat
             {
                 Console.WriteLine("\n Помилка ініціалізації:");
                 Console.WriteLine(ex.Message);
-
-                return 1;
             }
-
-            return 0;
         }
     }
 }

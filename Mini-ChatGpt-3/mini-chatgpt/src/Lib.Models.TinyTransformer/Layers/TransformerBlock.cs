@@ -19,8 +19,13 @@ public class TransformerBlock
         SelfAttentionLayer selfAttentionLayer = new SelfAttentionLayer(_config);
         FeedForwardLayer feedForwardLayer = new FeedForwardLayer(_config);
         
+<<<<<<< HEAD
         var fourthGrad = feedForwardLayer.Backward(gradient, cache, weightsGradients);
         selfAttentionLayer.Backward(fourthGrad, cache, weightsGradients);
+=======
+        var ffnGradient = feedForwardLayer.Backward(gradient, cache, weightsGradients);
+        selfAttentionLayer.Backward(ffnGradient, cache, weightsGradients);
+>>>>>>> origin/TinyTransformerTrainingAndIntegreation
     }
 
     public TransformerBlock(TinyTransformerConfig config)

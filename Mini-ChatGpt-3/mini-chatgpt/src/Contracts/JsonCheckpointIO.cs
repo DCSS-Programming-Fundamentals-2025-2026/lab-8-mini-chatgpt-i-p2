@@ -30,13 +30,13 @@ public sealed class JsonCheckpointIO : ICheckpointIO
     {
         if (!File.Exists(path))
         {
-            throw new FileNotFoundException($"Файл чекпоінту не знайдено: {path}");
+            throw new FileNotFoundException($"пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {path}");
         }
 
         string json = File.ReadAllText(path);
 
         var dto = JsonSerializer.Deserialize<CheckpointDto>(json, Options)
-                  ?? throw new InvalidOperationException("Файл чекпоінту порожній");
+                  ?? throw new InvalidOperationException("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
         return new Checkpoint(
             dto.ModelKind,
