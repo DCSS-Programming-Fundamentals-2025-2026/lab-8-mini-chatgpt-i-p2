@@ -97,13 +97,6 @@ public class SelfAttentionLayer
                 gradK[j][k] = gradScoresRow[j] * cache.Q[contextLen - 1][k];
             }
         }
-        AttentionBackward(cache.X[contextLen - 1], gradQRow[0], _config.Weights.wQ, weightsGrads.dQ);
-
-        for(int i = 0; i < contextLen; i++)
-            AttentionBackward(cache.X[i], gradK[i], _config.Weights.wK, weightsGrads.dK);
-
-        for(int i = 0; i < contextLen; i++)
-            AttentionBackward(cache.X[i], gradV[i], _config.Weights.wV, weightsGrads.dV);
         
         float[][] dX = new float[contextLen][];
         for(int i = 0; i < contextLen; i++) dX[i] = new float[_config.EmbeddingSize];

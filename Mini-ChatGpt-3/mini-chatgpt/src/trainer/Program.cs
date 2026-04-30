@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CommandLine;
 using Lib.Corpus.Configuration;
 using Lib.Corpus.Domain;
@@ -162,16 +162,40 @@ namespace Trainer
                 ModelVer = model.GetContractFingerprint();
                 Console.WriteLine("TinyTransformer створено");
 
+                int batchSize = 10;
+
                 for (int i = 0; i < opts.Epochs; i++)
                 {
+                    float totalLoss = 0;
+                    int count = 0;
+                    int batchCount = 0;
+                    WeightsGradients grads = new WeightsGradients(model._config.EmbeddingSize, model._config.VocabSize);
+
                     for (int j = 0; j < codedTrainTokens.Length - model._config.ContextSize; j++)
                     {
                         ReadOnlySpan<int> context =
                             new ReadOnlySpan<int>(codedTrainTokens, j, model._config.ContextSize);
                         int target = codedTrainTokens[j + model._config.ContextSize];
 
-                        Training.Train(model, context, target, opts.LearningRate);
+                        float loss = Training.ForwardBackward(model, context, target, grads);
+                        totalLoss += loss;
+                        count++;
+                        batchCount++;
+
+                        if (batchCount >= batchSize)
+                        {
+                            Training.Update(model._config.TokenEmbeddings, model._config.Weights, grads, opts.LearningRate, batchSize);
+                            grads = new WeightsGradients(model._config.EmbeddingSize, model._config.VocabSize);
+                            batchCount = 0;
+                        }
                     }
+
+                    if (batchCount > 0)
+                    {
+                        Training.Update(model._config.TokenEmbeddings, model._config.Weights, grads, opts.LearningRate, batchCount);
+                    }
+
+                    Console.WriteLine($"Епоха {i + 1}/{opts.Epochs} - Втрата: {totalLoss / count:F4}");
                 }
 
                 Checkpoint checkpoint = new Checkpoint(opts.Model, opts.Tokenizer, tokenizer.GetPayloadForCheckpoint(),
