@@ -1,4 +1,4 @@
-using Lib.MathCore;
+﻿using Lib.MathCore;
 using Lib.Models.TinyTransformer.State;
 
 namespace Lib.Models.TinyTransformer.Training;
@@ -30,6 +30,7 @@ public class Training
 
         return loss;
     }
+
     public static void Update(float[][] tE, TinyTransformerWeights weights, WeightsGradients grads, float learningRate)
     {
         UpdateMatrix(tE, grads.dE, learningRate);

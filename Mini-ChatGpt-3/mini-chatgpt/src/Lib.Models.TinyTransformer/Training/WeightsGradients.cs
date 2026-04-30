@@ -9,7 +9,6 @@ public class WeightsGradients
     public float[] dFfn2Bias;
     public float[] dOutputBias;
 
-
     public float[][] dE;
     public float[][] dQ;
     public float[][] dV;

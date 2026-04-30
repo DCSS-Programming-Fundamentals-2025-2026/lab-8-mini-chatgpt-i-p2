@@ -1,4 +1,4 @@
-﻿using Lib.MathCore;
+﻿﻿using Lib.MathCore;
 using Lib.Models.TinyTransformer.Configuration;
 using Lib.Models.TinyTransformer.Enums;
 using Lib.Models.TinyTransformer.State;
@@ -104,6 +104,28 @@ public class SelfAttentionLayer
 
         for(int i = 0; i < contextLen; i++)
             AttentionBackward(cache.X[i], gradV[i], _config.Weights.wV, weightsGrads.dV);
+        
+        float[][] dX = new float[contextLen][];
+        for(int i = 0; i < contextLen; i++) dX[i] = new float[_config.EmbeddingSize];
+
+        float[] dX_Q = AttentionBackward(cache.X[contextLen - 1], gradQRow[0], _config.Weights.wQ, weightsGrads.dQ);
+        MatrixHelper.LineSumm(dX[contextLen - 1], dX_Q);
+
+        for(int i = 0; i < contextLen; i++)
+        {
+            float[] dX_K = AttentionBackward(cache.X[i], gradK[i], _config.Weights.wK, weightsGrads.dK);
+            MatrixHelper.LineSumm(dX[i], dX_K);
+
+            float[] dX_V = AttentionBackward(cache.X[i], gradV[i], _config.Weights.wV, weightsGrads.dV);
+            MatrixHelper.LineSumm(dX[i], dX_V);
+        }
+
+        for (int i = 0; i < contextLen; i++)
+        {
+            int tokenIndex = cache.Context[i]; 
+            
+            MatrixHelper.LineSumm(weightsGrads.dE[tokenIndex], dX[i]);
+        }
     }
 
     public static float[] AttentionBackward(

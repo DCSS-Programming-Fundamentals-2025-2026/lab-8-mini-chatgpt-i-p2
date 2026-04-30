@@ -19,7 +19,6 @@ public class TransformerBlock
         SelfAttentionLayer selfAttentionLayer = new SelfAttentionLayer(_config);
         FeedForwardLayer feedForwardLayer = new FeedForwardLayer(_config);
         
-
         var ffnGradient = feedForwardLayer.Backward(gradient, cache, weightsGradients);
         selfAttentionLayer.Backward(ffnGradient, cache, weightsGradients);
     }

@@ -1,4 +1,4 @@
-﻿using Lib.Models.TinyTransformer.Configuration;
+﻿﻿using Lib.Models.TinyTransformer.Configuration;
 using Lib.Models.TinyTransformer.Enums;
 using Lib.Models.TinyTransformer.State;
 using Lib.Models.TinyTransformer.Training;
@@ -25,7 +25,6 @@ public class FeedForwardLayer
         hiddenHelper[0] = hidden;
 
         float[][] firstLinear = Linear(hiddenHelper, LinearAction.Expanse);
-
 
         if(isTraining) cache.FirstLinearOutput = firstLinear[0].ToArray();
         

@@ -6,9 +6,6 @@ namespace Lib.Models.TinyTransformer.State;
 public class TinyTransformerWeights
 {
     public static Random rnd = new Random(42);
-
-    [JsonPropertyName("embeddingWeight")]
-    public float[][] EmbeddingWeight { get; set; }
     public float[][] wQ { get; set; }
     public float[][] wK { get; set; }
     public float[][] wV { get; set; }
@@ -43,13 +40,15 @@ public class TinyTransformerWeights
     public TinyTransformerWeights(int embeddingSize, int vocabSize)
     {
         wQ = GenerateMatrix(embeddingSize, embeddingSize);
+
         wK = GenerateMatrix(embeddingSize, embeddingSize);
         wV = GenerateMatrix(embeddingSize, embeddingSize);
         wO = GenerateMatrix(embeddingSize, embeddingSize);
-        
         OutputW = GenerateMatrix(embeddingSize, vocabSize);
+
         ffn1 =
             GenerateMatrix(embeddingSize, embeddingSize * 4);
+
         ffn2 =
             GenerateMatrix(embeddingSize * 4, embeddingSize);
 

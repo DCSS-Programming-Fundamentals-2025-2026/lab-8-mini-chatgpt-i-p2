@@ -10,37 +10,21 @@ public static class TinyTransformerModelFactory
     {
         return new TinyTransformerModel(config);
     }
-
-    public static TinyTransformerModel FromPayload(JsonElement payload, int vocabSize, Lib.MathCore.IMathOps mathOps)
+    
+    public static TinyTransformerModel FromPayload(JsonElement payload)
     {
-        var options = new JsonSerializerOptions
+        var options = new JsonSerializerOptions 
         {
-            PropertyNameCaseInsensitive = true,
-            IncludeFields = true
+            WriteIndented = true,
         };
+        
+        TinyTransformerConfig config = payload.Deserialize<TinyTransformerConfig>(options);
 
-        Lib.Models.TinyTransformer.State.TinyTransformerWeights weights =
-            payload.Deserialize<Lib.Models.TinyTransformer.State.TinyTransformerWeights>(options);
-
-        if (weights == null)
+        if (config == null)
         {
-            throw new Exception("Не вдалося завантажити ваги");
+            config = new TinyTransformerConfig(5000);
         }
-
-        Lib.Models.TinyTransformer.Configuration.TinyTransformerConfig config =
-            new Lib.Models.TinyTransformer.Configuration.TinyTransformerConfig(vocabSize, weights: weights);
-
-        config.MathOps = mathOps;
-
-        if (config.ContextSize == 0) config.ContextSize = 256;
-        if (config.EmbeddingSize == 0) config.EmbeddingSize = 64; 
-        if (config.HeadCount == 0) config.HeadCount = 4;
-
-        if (weights.EmbeddingWeight != null)
-        {
-            config.TokenEmbeddings = weights.EmbeddingWeight;
-        }
-
+        
         return new TinyTransformerModel(config);
     }
 }
