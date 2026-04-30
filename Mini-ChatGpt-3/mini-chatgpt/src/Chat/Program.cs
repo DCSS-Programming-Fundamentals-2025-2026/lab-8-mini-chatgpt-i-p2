@@ -75,7 +75,7 @@ namespace MiniChatGPT.Chat
                 }
                 else if (payload.ModelKind == "tinytransformer")
                 {
-                    var raw = TinyTransformerModelFactory.FromPayload(modJson, tokenizer.VocabSize, mathOps);
+                    var raw = TinyTransformerModelFactory.FromPayload(modJson);
                     model = new LanguageModelAdapter(raw, "tinytransformer", tokenizer.VocabSize);
                 }
                 else if (payload.ModelKind == "bigram")
