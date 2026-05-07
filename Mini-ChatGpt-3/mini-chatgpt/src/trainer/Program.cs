@@ -16,9 +16,11 @@ using MiniChatGPT.Contracts;
 using NGram;
 using NGram.ModelFactory;
 
+// ВАЖНО: Добавь using для папки, где лежит твой PsoTrainer
+using Trainer.Pso;
+
 namespace Trainer
 {
-
     public class Trainer
     {
         public static void Main(string[] args)
@@ -86,7 +88,7 @@ namespace Trainer
             if (opts.Model.ToLower() == "tinynn")
             {
                 var nnFactory = new TinyNNModelFactory();
-                var nnConfig = new TinyNNConfig(tokenizer.VocabSize, 64);
+                var nnConfig = new TinyNNConfig(tokenizer.VocabSize, 8); 
                 TinyNNModel model;
 
                 if (File.Exists(opts.Out))
@@ -109,9 +111,22 @@ namespace Trainer
                 }
 
                 ModelVer = model.GetContractFingerprint();
-                Console.WriteLine("Навчання TinyNN");
+                
+                Console.WriteLine("Навчання TinyNN за допомогою PSO (Метод рою частинок)");
 
-                Console.WriteLine($"Початок тренування у {opts.Epochs} епох");
+                // -----------------------------------------------------
+                //  PSO
+                // -----------------------------------------------------
+                
+                List<int> tokenList = new List<int>(codedTrainTokens);
+                var psoTrainer = new PsoTrainer();
+                psoTrainer.Train(model, tokenList, swarmSize: 100, epochs: opts.Epochs);
+
+                // -----------------------------------------------------
+                // OLD CODE
+                // -----------------------------------------------------
+                /*
+                Console.WriteLine($"Початок тренування у {opts.Epochs} епох (SGD)");
                 for (int i = 0; i < opts.Epochs; i++)
                 {
                     float totalLoss = 0;
@@ -129,6 +144,7 @@ namespace Trainer
                     }
                     Console.WriteLine($"Епоха {i + 1}/{opts.Epochs} - Втрата: {totalLoss / count:F4}");
                 }
+                */
 
                 Checkpoint checkpoint = new Checkpoint(opts.Model, opts.Tokenizer, tokenizer.GetPayloadForCheckpoint(), model.ToPayload(), opts.Seed, GenerateFingerprintChain(CorpusVer, TokenizerVer, ModelVer));
                 json.Save(opts.Out, checkpoint);
